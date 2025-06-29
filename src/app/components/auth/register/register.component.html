@@ -1,0 +1,67 @@
+<div class="register-container">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+    <h1>إنشاء حساب جديد</h1>
+    <p class="subtitle">يرجى تعبئة المعلومات التالية للتسجيل</p>
+
+    <!-- الاسم -->
+    <div class="form-group">
+      <label for="name">الاسم الكامل</label>
+      <input type="text" id="name" formControlName="name" placeholder="أدخل اسمك" [ngClass]="{ invalid: registerForm.get('name')?.invalid && registerForm.get('name')?.touched }" />
+      <div class="error-message" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+        الاسم مطلوب (3 أحرف على الأقل)
+      </div>
+    </div>
+
+    <!-- البريد الإلكتروني -->
+    <div class="form-group">
+      <label for="email">البريد الإلكتروني</label>
+      <input type="email" id="email" formControlName="email" placeholder="example@email.com" [ngClass]="{ invalid: registerForm.get('email')?.invalid && registerForm.get('email')?.touched }" />
+      <div class="error-message" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+        البريد الإلكتروني غير صالح
+      </div>
+    </div>
+
+    <!-- رقم الهاتف -->
+    <div class="form-group">
+      <label for="phone">رقم الهاتف</label>
+      <input type="text" id="phone" formControlName="phone" placeholder="01XXXXXXXXX" [ngClass]="{ invalid: registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched }" />
+      <div class="error-message" *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched">
+        أدخل رقم هاتف مصري صالح يبدأ بـ 01
+      </div>
+    </div>
+
+    <!-- كلمة المرور -->
+    <div class="form-group">
+      <label for="password">كلمة المرور</label>
+      <input type="password" id="password" formControlName="password" placeholder="••••••" [ngClass]="{ invalid: registerForm.get('password')?.invalid && registerForm.get('password')?.touched }" />
+      <div class="error-message" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        كلمة المرور يجب أن تكون 6 أحرف على الأقل
+      </div>
+    </div>
+
+    <!-- نوع المستخدم -->
+    <div class="form-group">
+      <label for="role">نوع المستخدم</label>
+      <select id="role" formControlName="role">
+        <option value="passenger">راكب</option>
+        <option value="driver">سائق</option>
+      </select>
+    </div>
+
+    <!-- زر التسجيل -->
+    <button type="submit" class="register-btn" [class.loading]="loading" [disabled]="loading || registerForm.invalid">
+      <span *ngIf="!loading">تسجيل</span>
+      <span *ngIf="loading">...جاري التسجيل</span>
+    </button>
+
+    <!-- رسالة الخطأ -->
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <!-- رابط تسجيل الدخول -->
+    <div class="form-links">
+      <p class="login-link">هل لديك حساب؟ <a routerLink="/login">تسجيل الدخول</a></p>
+    </div>
+  </form>
+</div>
