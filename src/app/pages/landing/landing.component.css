@@ -1,0 +1,16 @@
+.hero-bg {
+    background-image: url('/Rectangle 46.png');
+    background-size: cover;
+  }
+  .bg{
+    background-color: #0BB097;
+  }
+  
+/* Custom styles for features section (if needed) */
+
+/* Custom styles for showcase section (laptop and background text) */
+
+.text-shadow-lg {
+  text-shadow: 0 4px 32px rgba(0,0,0,0.35), 0 1.5px 0 #183A7C;
+}
+  

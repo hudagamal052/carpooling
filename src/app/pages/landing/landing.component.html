@@ -1,0 +1,227 @@
+<div class="flex flex-col md:flex-row bg-gray-50 overflow-hidden h-[640px]">
+  <!-- Right Side: Hero Form -->
+  <div class="md:w-[750px] flex flex-col justify-center text-white px-12 relative hero-bg">
+    <!-- Main Heading -->
+    <h1 class="text-4xl font-bold mb-4 text-right">احصل على توصيلة الآن</h1>
+    <p class="text-right mb-18 text-gray-200 pl-90 text-xl">شارك الطريق، قلل التكاليف، استمتع بالمشوار.</p>
+
+    <!-- Form -->
+    <form class="space-y-4 w-full w-sm">
+      <div class="relative">
+        <img src="add_location_alt.png" alt="" class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5">
+        <input type="text" placeholder="عنوان بدء الرحلة"
+          class="w-full pr-10 px-4 pt-3 rounded-lg focus:outline-none text-gray-700 bg-white text-sm pb-4">
+      </div>
+      <div class="relative">
+        <img src="distance.png" alt="" class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5">
+        <input type="text" placeholder="عنوان الوجهة"
+          class="w-full pr-10 px-4 pt-3 rounded-lg focus:outline-none text-gray-700 bg-white text-sm pb-4">
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="relative flex-1">
+          <img src="smartphone.png" alt="" class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5">
+          <input type="text" placeholder="رقم الهاتف"
+            class="w-full pr-10 px-4 pt-3 rounded-lg focus:outline-none text-gray-700 bg-white text-sm pb-4">
+        </div>
+        <button type="submit"
+          class="bg hover:bg-green-600 text-white font-bold py-3 px-11 rounded-lg whitespace-nowrap">اطلب
+          الآن</button>
+      </div>
+    </form>
+  </div>
+  <!-- Left Side: Image and Branding -->
+  <div class="md:w-1/2 flex flex-col items-center justify-center ">
+    <div class="flex-1 flex flex-col items-center justify-center relative w-full h-[500px] mt-5">
+      <!-- Phone Image -->
+      <img src="iPhone.png" alt="iPhone"
+        class="absolute left-65 top-1/2 -translate-x-1/2 -translate-y-1/2 w-52 z-10 drop-shadow-lg">
+      <!-- Car Image (in front of phone) -->
+      <img [src]="currentCarImage" alt="Car" class="absolute left-72 bottom-0 -translate-x-1/2 z-20 drop-shadow-2xl ">
+    </div>
+  </div>
+</div>
+
+<!-- Features Section -->
+<section class="bg-gray-100 py-16 px-[64px]">
+  <h2 class="text-5xl font-bold text-center mb-12 text-gray-800">مميزاتنا</h2>
+  <div class="container mx-auto flex flex-col md:flex-row gap-[24px] justify-center items-stretch">
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 flex-1 flex flex-col items-center text-center transition-transform hover:scale-105 group relative overflow-hidden">
+      <img src="card-img1.png" alt="ميزة 1" class="w-60 h-60 mb-3 group-hover:opacity-0 transition-opacity duration-900">
+      <!-- <img src="airport_shuttle.png" alt="ميزة 1" class="absolute top-[50%] opacity-0 group-hover:opacity-60 transition-opacity duration-900"> -->
+      <div class="relative w-full">
+        <h3 class="text-2xl font-bold mb-2 text-gray-800 transition-all duration-900 group-hover:-translate-y-60 ">
+          واجهة سهلة الاستخدام
+        </h3>
+        <p
+          class="text-gray-600 absolute left-0 right-0 mx-auto group-hover:opacity-0 transition-opacity duration-900">
+          سجل أو احجز رحلتك في ثواني.
+        </p>
+        <p
+        class="text-gray-600 opacity-0 transition-all duration-900 absolute left-0 right-0 mx-auto group-hover:opacity-100 group-hover:-translate-y-55 ">
+        في ظل ارتفاع أسعار الوقود وتكاليف صيانة السيارات، أصبحت فكرة مشاركة
+        <span *ngIf="!showMore" class="text-[#0BB097] cursor-pointer" (click)="showMore = true"> ...عرض المزيد</span>
+        <span *ngIf="showMore"> السيارات خيارًا ذكيًا واقتصاديًا. من خلال منصتنا، يمكنك بسهولة العثور على رحلات تشاركها مع آخرين وتوفير التكاليف.</span>
+      </p>
+    </div>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 flex-1 flex flex-col items-center text-center transition-transform hover:scale-105">
+      <img src="card-img2.png" alt="ميزة 2" class="w-60 h-60 mb-3">
+      <h3 class="text-2xl font-bold mb-2 text-gray-800">مجتمع موثوق</h3>
+      <p class="text-gray-600">كل الحسابات موثقة ومراجعة.</p>
+    </div>
+    <div
+      class="bg-white rounded-2xl shadow-lg p-8 flex-1 flex flex-col items-center text-center transition-transform hover:scale-105">
+      <img src="card-img3.png" alt="ميزة 3" class="w-60 h-60 mb-3">
+      <h3 class="text-2xl font-bold mb-2 text-gray-800">رحلات بتكلفة أقل</h3>
+      <p class="text-gray-600">وفر في تكاليف البنزين والصيانة.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Showcase Section -->
+<section class="relative bg-[#183A7C] py-3 overflow-hidden flex justify-center items-center">
+  <!-- Large background text -->
+  <span
+    class="absolute inset-0 flex items-center justify-center text-[160px] font-semibold text-white opacity-90 select-none pointer-events-none leading-none z-0 text-shadow-lg">
+    مـشــــــــــــــــــــــــــوار </span>
+  <!-- Laptop Image -->
+  <img src="ZenBook.png" alt="Laptop" class="relative z-10 mx-auto w-[700px] md:w-[870px] drop-shadow-2xl">
+</section>
+
+<!-- About Us Section -->
+<section class="relative bg-gray-50 py-24 px-4 md:px-0">
+  <h2 class="text-5xl font-bold text-center mb-8 text-gray-800">من نحن</h2>
+  <p class="text-center max-w-2xl mx-auto mb-16 text-lg text-gray-700">
+    <span class="font-bold text-black">"مشوار"</span> هي منصة مبتكرة تربط بين الركاب والسائقين الذين يشاركون نفس خط
+    السير، بهدف تسهيل التنقل اليومي وتوفير وسيلة آمنة وموثوقة للتنقل داخل المدن وبين المحافظات.
+  </p>
+  <div class="relative flex justify-center items-center min-h-[420px] w-[100%]">
+    <!-- Vertical line -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 h-[440px] w-2 bg-[#E5E7EB] rounded-full z-0"></div>
+    <!-- Glowing Circles -->
+    <!-- Top Circle -->
+    <span class="absolute left-1/2 -translate-x-1/2 top-[8%] z-10">
+      <span class="block w-16 h-16 rounded-full bg-cyan-300 opacity-40 blur-2xl absolute -top-5 -left-5"></span>
+      <span class="block w-12 h-12 rounded-full bg-[#0BB097] shadow-lg relative overflow-visible blur-[3px]">
+        <span class="absolute left-1/2 -translate-x-1/2  w-14 h-14 rounded-full bg-[#0BB097] opacity-60 blur-md"></span>
+      </span>
+    </span>
+    <!-- Middle Circle -->
+    <span class="absolute left-1/2 -translate-x-1/2 bottom-[42%] z-10">
+      <span class="block w-16 h-16 rounded-full bg-yellow-300 opacity-40 blur-2xl absolute -top-5 -left-5"></span>
+      <span class="block w-12 h-12 rounded-full bg-[#FFD600] shadow-lg relative overflow-visible blur-[3px]">
+        <span class="absolute left-1/2 -translate-x-1/2  w-14 h-14 rounded-full bg-[#FFD600] opacity-60 blur-md"></span>
+      </span>
+    </span>
+    <!-- Bottom Circle -->
+    <span class="absolute left-1/2 -translate-x-1/2 bottom-[2%] z-10">
+      <span class="block w-16 h-16 rounded-full bg-blue-400 opacity-40 blur-2xl absolute -top-5 -left-5"></span>
+      <span class="block w-12 h-12 rounded-full bg-[#3B5BFE] shadow-lg relative overflow-visible blur-[3px]">
+        <span class="absolute left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-[#3B5BFE] opacity-60 blur-md"></span>
+      </span>
+    </span>
+    <div>
+      <!-- Points and Text -->
+      <!-- Vision (top right) -->
+      <div class="absolute top-0 right-0 pr-[64px] flex flex-col items-end w-full md:w-[48%]">
+        <div class="flex items-center gap-3">
+          <span class="block w-6 h-6 rounded-full bg-[#0BB097] shadow-lg"></span>
+          <div>
+            <h3 class="text-xl font-bold text-[#0BB097] mb-1">رؤيتنا</h3>
+            <p class="text-gray-700 text-base leading-relaxed">أن نصبح الخيار الأول للتنقل التشاركي في مصر والمنطقة، من
+              خلال بناء مجتمع يعتمد على الثقة، الراحة، والأمان.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Mission (left middle) -->
+      <div class="absolute left-0 bottom-[33%] pl-[64px] flex flex-col items-start w-full md:w-[46%]">
+        <div class="flex items-center gap-3">
+          <div>
+            <h3 class="text-xl font-bold text-[#FFD600] mb-1 text-left">مهمتنا</h3>
+            <p class="text-gray-700 text-base leading-relaxed">تقليل الزحام والتلوث الناتج عن الاعتماد على السيارات
+              الفردية، تمكين الأفراد من توفير الوقت والمال عبر تنظيم رحلات تشاركية، توفير بدائل ذكية وآمنة للمواصلات
+              التقليدية.</p>
+          </div>
+          <span class="block w-9 h-6 rounded-full bg-[#FFD600] shadow-lg"></span>
+        </div>
+      </div>
+      <!-- Who we serve (bottom right) -->
+      <div class="absolute bottom-0 right-0 pr-[64px] flex flex-col items-end w-full md:w-[48%]">
+        <div class="flex items-center gap-3">
+          <span class="block w-6 h-6 rounded-full bg-[#3B5BFE] shadow-lg"></span>
+          <div>
+            <h3 class="text-xl font-bold text-[#3B5BFE] mb-1">من نخدم؟</h3>
+            <p class="text-gray-700 text-base leading-relaxed">الطلاب الجامعيين، الموظفين، المسافرين بين المحافظات،
+              السائقين الذين يرغبون في مشاركة رحلاتهم وتوفير جزء من التكاليف.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Discount Section -->
+<section class="relative w-full h-[400px] flex items-center bg-cover bg-center"
+  style="background-image: url('bg-image-5.png');">
+  <!-- Content -->
+  <div class="relative z-10 max-w-2xl px-0 md:px-24">
+    <h2 class="text-white text-5xl font-bold mb-4 text-center flex flex-col gap-3">
+      <span> خصم٥٠% </span>
+      <span>على أول طلب</span>
+    </h2>
+    <p class="text-white text-2xl mb-8">خصم رائع على أول رحلة ليك من "مشوار".</p>
+    <div class="text-center">
+      <button class="bg-[#0BB097] hover:bg-[#099e7d] text-white font-bold py-3 px-16 rounded-lg text-xl transition">اطلب
+        الآن</button>
+    </div>
+  </div>
+</section>
+
+<!-- Footer Section -->
+<footer class="bg-gray-100 pt-12 pb-4 mt-12 border-t border-gray-300">
+  <div class="container mx-auto px-8 flex flex-col md:flex-row justify-between items-start gap-12">
+    <!-- Logo and Description -->
+    <div class="flex-1 min-w-[220px]">
+      <h2 class="text-6xl font-extrabold mb-2">Meshwar</h2>
+      <p class="text-xl text-gray-700 mb-4">شارك الطريق، قلّل التكاليف، استمتع بالمشوار.</p>
+    </div>
+    <!-- About -->
+    <div class="flex-1 min-w-[120px]">
+      <h3 class="text-2xl font-bold mb-3">عنّا</h3>
+      <ul class="space-y-2 text-gray-600 text-lg">
+        <li><a href="#" class="hover:text-[#0BB097]">من نحن</a></li>
+        <li><a href="#" class="hover:text-[#0BB097]">كيف يعمل</a></li>
+        <li><a href="#" class="hover:text-[#0BB097]">فريقنا</a></li>
+      </ul>
+    </div>
+    <!-- Quick Links -->
+    <div class="flex-1 min-w-[160px]">
+      <h3 class="text-2xl font-bold mb-3">روابط سريعة</h3>
+      <ul class="space-y-2 text-gray-600 text-lg">
+        <li><a href="#" class="hover:text-[#0BB097]">مستخدم جديد</a></li>
+        <li><a href="#" class="hover:text-[#0BB097]">تسجيل دخول</a></li>
+        <li><a href="#" class="hover:text-[#0BB097]">أسئلة و أجوبة</a></li>
+        <li><a href="#" class="hover:text-[#0BB097]">سياسة الخصوصية</a></li>
+        <li><a href="#" class="hover:text-[#0BB097]">الشروط والأحكام</a></li>
+      </ul>
+    </div>
+    <!-- Contact -->
+    <div class="flex-1 min-w-[180px]">
+      <h3 class="text-2xl font-bold mb-3">تواصل معنا</h3>
+      <ul class="space-y-2 text-gray-600 text-lg">
+        <li><a href="mailto:kero.sameh.2024@gmail.com"
+            class="hover:text-[#0BB097] underline">KERO.SAMEH.2024GMAIL.COM</a></li>
+        <li><a href="tel:+201202539386" class="hover:text-[#0BB097]">+20-120-253-9386</a></li>
+        <li class="flex gap-4 mt-2">
+          <a href="#" aria-label="Google"><img src="google.png" alt="Google" class="w-7 h-7"></a>
+          <a href="#" aria-label="Facebook"><img src="facebook.png" alt="Facebook" class="w-7 h-7"></a>
+          <a href="#" aria-label="LinkedIn"><img src="liinkedin.png" alt="LinkedIn" class="w-7 h-7"></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <hr class="my-8 border-gray-300">
+  <div class="text-center text-gray-500 text-lg">© 2025. ITI INTAKE 45</div>
+</footer>
