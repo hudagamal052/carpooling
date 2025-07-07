@@ -1,0 +1,297 @@
+<div class="verify-driver-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <div class="hero-content">
+            <div class="icon-wrapper mb-4">
+              <i class="fas fa-shield-check"></i>
+            </div>
+            <h1 class="hero-title">توثيق حساب السائق</h1>
+            <p class="hero-subtitle">
+              انضم إلى مجتمع السائقين الموثوقين واحصل على فرص أكثر لمشاركة الرحلات
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <!-- Progress Steps -->
+          <div class="steps-container mb-5">
+            <div class="steps-wrapper">
+              <div class="step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+                <div class="step-number">1</div>
+                <div class="step-title">رخصة القيادة</div>
+              </div>
+              <div class="step-line" [class.completed]="currentStep > 1"></div>
+              <div class="step" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+                <div class="step-number">2</div>
+                <div class="step-title">بيانات المركبة</div>
+              </div>
+              <div class="step-line" [class.completed]="currentStep > 2"></div>
+              <div class="step" [class.active]="currentStep >= 3">
+                <div class="step-number">3</div>
+                <div class="step-title">المراجعة</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Card -->
+          <div class="form-card">
+            <div class="card-header">
+              <h3 class="step-title-main">
+                <i class="fas fa-edit me-2"></i>
+                {{ getStepTitle() }}
+              </h3>
+              <p class="step-description">الخطوة {{ currentStep }} من {{ totalSteps }}</p>
+            </div>
+
+            <div class="card-body">
+              <form [formGroup]="verificationForm">
+                <!-- Step 1: License Information -->
+                <div *ngIf="currentStep === 1" class="step-content">
+                  <div class="row">
+                    <div class="col-md-6 mb-4">
+                      <label class="form-label">رقم رخصة القيادة</label>
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="fas fa-id-card"></i>
+                        </span>
+                        <input 
+                          type="text" 
+                          class="form-control"
+                          formControlName="licenseNumber"
+                          placeholder="أدخل رقم رخصة القيادة"
+                          [class.is-invalid]="verificationForm.get('licenseNumber')?.invalid && verificationForm.get('licenseNumber')?.touched">
+                      </div>
+                      <div class="invalid-feedback">
+                        يرجى إدخال رقم رخصة قيادة صحيح (10 أرقام على الأقل)
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                      <label class="form-label">صورة رخصة القيادة</label>
+                      <div class="file-upload-wrapper">
+                        <input 
+                          type="file" 
+                          class="file-input"
+                          id="licenseFile"
+                          accept="image/*"
+                          (change)="onFileSelected($event)"
+                          required>
+                        <label for="licenseFile" class="file-upload-label">
+                          <i class="fas fa-cloud-upload-alt"></i>
+                          <span>اختر صورة الرخصة</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Image Preview -->
+                  <div class="image-preview" *ngIf="previewUrl">
+                    <h6 class="mb-3">معاينة الصورة:</h6>
+                    <div class="preview-container">
+                      <img [src]="previewUrl" alt="License Preview" class="preview-image">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 2: Vehicle Information -->
+                <div *ngIf="currentStep === 2" class="step-content">
+                  <div class="row">
+                    <div class="col-md-6 mb-4">
+                      <label class="form-label">ماركة المركبة</label>
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="fas fa-car"></i>
+                        </span>
+                        <select class="form-select" formControlName="vehicleMake">
+                          <option value="">اختر الماركة</option>
+                          <option value="تويوتا">تويوتا</option>
+                          <option value="هيونداي">هيونداي</option>
+                          <option value="نيسان">نيسان</option>
+                          <option value="كيا">كيا</option>
+                          <option value="هوندا">هوندا</option>
+                          <option value="شيفروليه">شيفروليه</option>
+                          <option value="فورد">فورد</option>
+                          <option value="أخرى">أخرى</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                      <label class="form-label">موديل المركبة</label>
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="fas fa-cog"></i>
+                        </span>
+                        <input 
+                          type="text" 
+                          class="form-control"
+                          formControlName="vehicleModel"
+                          placeholder="مثال: كامري، إلنترا">
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-4 mb-4">
+                      <label class="form-label">سنة الصنع</label>
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="fas fa-calendar"></i>
+                        </span>
+                        <input 
+                          type="number" 
+                          class="form-control"
+                          formControlName="vehicleYear"
+                          placeholder="2020"
+                          min="2000"
+                          [max]="getCurrentYear()">
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                      <label class="form-label">لون المركبة</label>
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="fas fa-palette"></i>
+                        </span>
+                        <select class="form-select" formControlName="vehicleColor">
+                          <option value="">اختر اللون</option>
+                          <option value="أبيض">أبيض</option>
+                          <option value="أسود">أسود</option>
+                          <option value="فضي">فضي</option>
+                          <option value="رمادي">رمادي</option>
+                          <option value="أحمر">أحمر</option>
+                          <option value="أزرق">أزرق</option>
+                          <option value="بني">بني</option>
+                          <option value="أخضر">أخضر</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                      <label class="form-label">عدد المقاعد</label>
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="fas fa-users"></i>
+                        </span>
+                        <select class="form-select" formControlName="capacity">
+                          <option value="">اختر العدد</option>
+                          <option value="2">2 مقاعد</option>
+                          <option value="4">4 مقاعد</option>
+                          <option value="5">5 مقاعد</option>
+                          <option value="7">7 مقاعد</option>
+                          <option value="8">8 مقاعد</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-12 mb-4">
+                      <label class="form-label">رقم اللوحة</label>
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="fas fa-hashtag"></i>
+                        </span>
+                        <input 
+                          type="text" 
+                          class="form-control"
+                          formControlName="plateNumber"
+                          placeholder="مثال: أ ب ج 1234">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 3: Review -->
+                <div *ngIf="currentStep === 3" class="step-content">
+                  <div class="review-section">
+                    <h5 class="mb-4">مراجعة البيانات المدخلة:</h5>
+                    
+                    <div class="review-card mb-4">
+                      <h6 class="review-title">
+                        <i class="fas fa-id-card me-2"></i>
+                        بيانات رخصة القيادة
+                      </h6>
+                      <div class="review-content">
+                        <p><strong>رقم الرخصة:</strong> {{ verificationForm.value.licenseNumber }}</p>
+                        <div *ngIf="previewUrl" class="mt-3">
+                          <img [src]="previewUrl" alt="License" class="review-image">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="review-card">
+                      <h6 class="review-title">
+                        <i class="fas fa-car me-2"></i>
+                        بيانات المركبة
+                      </h6>
+                      <div class="review-content">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <p><strong>الماركة:</strong> {{ verificationForm.value.vehicleMake }}</p>
+                            <p><strong>الموديل:</strong> {{ verificationForm.value.vehicleModel }}</p>
+                            <p><strong>سنة الصنع:</strong> {{ verificationForm.value.vehicleYear }}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <p><strong>اللون:</strong> {{ verificationForm.value.vehicleColor }}</p>
+                            <p><strong>عدد المقاعد:</strong> {{ verificationForm.value.capacity }}</p>
+                            <p><strong>رقم اللوحة:</strong> {{ verificationForm.value.plateNumber }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="card-footer">
+              <div class="d-flex justify-content-between">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary"
+                  [disabled]="currentStep === 1"
+                  (click)="previousStep()">
+                  <i class="fas fa-arrow-right me-2"></i>
+                  السابق
+                </button>
+                
+                <div class="d-flex gap-2">
+                  <button 
+                    type="button" 
+                    class="btn btn-primary"
+                    *ngIf="currentStep < totalSteps"
+                    [disabled]="!isStepValid()"
+                    (click)="nextStep()">
+                    التالي
+                    <i class="fas fa-arrow-left ms-2"></i>
+                  </button>
+                  
+                  <button 
+                    type="submit" 
+                    class="btn btn-success"
+                    *ngIf="currentStep === totalSteps"
+                    [disabled]="!isStepValid() || isSubmitting"
+                    (click)="onSubmit()">
+                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+                    <i *ngIf="!isSubmitting" class="fas fa-check me-2"></i>
+                    {{ isSubmitting ? 'جاري التوثيق...' : 'إرسال طلب التوثيق' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

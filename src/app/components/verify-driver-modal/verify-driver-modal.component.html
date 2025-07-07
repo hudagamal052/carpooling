@@ -1,0 +1,173 @@
+<!-- Modal Backdrop -->
+<div class="modal-backdrop" [class.show]="isVisible" (click)="closeModal()" *ngIf="isVisible"></div>
+
+<!-- Modal -->
+<div class="modal fade" [class.show]="isVisible" [style.display]="isVisible ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content border-0 shadow-lg">
+      <!-- Modal Header -->
+      <div class="modal-header bg-gradient-primary text-white border-0">
+        <h4 class="modal-title fw-bold">
+          <i class="fas fa-shield-alt me-2"></i>
+          توثيق حساب السائق
+        </h4>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4">
+        <div class="alert alert-info border-0 bg-light-info">
+          <i class="fas fa-info-circle me-2"></i>
+          يرجى ملء جميع البيانات المطلوبة لتوثيق حسابك كسائق
+        </div>
+
+        <form [formGroup]="verificationForm" (ngSubmit)="onSubmit()">
+          <!-- License Information -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-light border-0">
+              <h6 class="mb-0 fw-bold text-primary">
+                <i class="fas fa-id-card me-2"></i>
+                بيانات رخصة القيادة
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">رقم رخصة القيادة</label>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-lg"
+                    formControlName="licenseNumber"
+                    placeholder="أدخل رقم رخصة القيادة"
+                    [class.is-invalid]="verificationForm.get('licenseNumber')?.invalid && verificationForm.get('licenseNumber')?.touched">
+                  <div class="invalid-feedback">
+                    يرجى إدخال رقم رخصة قيادة صحيح (10 أرقام على الأقل)
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">صورة رخصة القيادة</label>
+                  <input 
+                    type="file" 
+                    class="form-control form-control-lg"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                    required>
+                </div>
+              </div>
+              
+              <!-- Image Preview -->
+              <div class="mt-3" *ngIf="previewUrl">
+                <div class="text-center">
+                  <img [src]="previewUrl" alt="License Preview" class="img-thumbnail" style="max-height: 200px;">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vehicle Information -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-light border-0">
+              <h6 class="mb-0 fw-bold text-primary">
+                <i class="fas fa-car me-2"></i>
+                بيانات المركبة
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">الماركة</label>
+                  <select class="form-select form-select-lg" formControlName="vehicleMake">
+                    <option value="">اختر الماركة</option>
+                    <option value="تويوتا">تويوتا</option>
+                    <option value="هيونداي">هيونداي</option>
+                    <option value="نيسان">نيسان</option>
+                    <option value="كيا">كيا</option>
+                    <option value="هوندا">هوندا</option>
+                    <option value="شيفروليه">شيفروليه</option>
+                    <option value="فورد">فورد</option>
+                    <option value="أخرى">أخرى</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-semibold">الموديل</label>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-lg"
+                    formControlName="vehicleModel"
+                    placeholder="مثال: كامري، إلنترا">
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="form-label fw-semibold">سنة الصنع</label>
+                  <input 
+                    type="number" 
+                    class="form-control form-control-lg"
+                    formControlName="vehicleYear"
+                    placeholder="2020"
+                    min="2000"
+                    [max]="getCurrentYear()">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label fw-semibold">اللون</label>
+                  <select class="form-select form-select-lg" formControlName="vehicleColor">
+                    <option value="">اختر اللون</option>
+                    <option value="أبيض">أبيض</option>
+                    <option value="أسود">أسود</option>
+                    <option value="فضي">فضي</option>
+                    <option value="رمادي">رمادي</option>
+                    <option value="أحمر">أحمر</option>
+                    <option value="أزرق">أزرق</option>
+                    <option value="بني">بني</option>
+                    <option value="أخضر">أخضر</option>
+                  </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label fw-semibold">عدد المقاعد</label>
+                  <select class="form-select form-select-lg" formControlName="capacity">
+                    <option value="">اختر العدد</option>
+                    <option value="2">2 مقاعد</option>
+                    <option value="4">4 مقاعد</option>
+                    <option value="5">5 مقاعد</option>
+                    <option value="7">7 مقاعد</option>
+                    <option value="8">8 مقاعد</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-12 mb-3">
+                  <label class="form-label fw-semibold">رقم اللوحة</label>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-lg"
+                    formControlName="plateNumber"
+                    placeholder="مثال: أ ب ج 1234">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer border-0 bg-light">
+        <button type="button" class="btn btn-secondary btn-lg px-4" (click)="closeModal()">
+          <i class="fas fa-times me-2"></i>
+          إلغاء
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary btn-lg px-4"
+          [disabled]="!verificationForm.valid || !selectedLicenseFile || isSubmitting"
+          (click)="onSubmit()">
+          <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+          <i *ngIf="!isSubmitting" class="fas fa-check me-2"></i>
+          {{ isSubmitting ? 'جاري التوثيق...' : 'توثيق الحساب' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

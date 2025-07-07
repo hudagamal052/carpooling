@@ -1,0 +1,159 @@
+<div class="trip-launcher-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <div class="hero-content">
+            <div class="hero-icon mb-4">
+              <i class="fas fa-car-side"></i>
+            </div>
+            <h1 class="hero-title">شارك رحلتك واربح المال</h1>
+            <p class="hero-subtitle">
+              انضم إلى آلاف السائقين الذين يحققون دخلاً إضافياً من خلال مشاركة رحلاتهم اليومية
+            </p>
+            
+            <!-- User Status Display -->
+            <div class="user-status mb-4" *ngIf="isLoggedIn">
+              <div class="status-card">
+                <div class="user-info">
+                  <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div class="user-details">
+                    <h6>مرحباً، {{ currentUser?.name }}</h6>
+                    <div class="verification-status">
+                      <span class="status-badge" [class.verified]="isVerifiedDriver" [class.pending]="!isVerifiedDriver">
+                        <i class="fas" [class.fa-check-circle]="isVerifiedDriver" [class.fa-clock]="!isVerifiedDriver"></i>
+                        {{ isVerifiedDriver ? 'سائق موثق' : 'في انتظار التوثيق' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main CTA Button -->
+            <div class="cta-section">
+              <button 
+                class="btn btn-primary btn-lg cta-button"
+                (click)="onCreateTrip()"
+                [disabled]="!isLoggedIn">
+                <div class="button-content">
+                  <i class="fas fa-plus-circle me-3"></i>
+                  <span class="button-text">أنشئ رحلتك الآن</span>
+                  <i class="fas fa-arrow-left ms-3"></i>
+                </div>
+              </button>
+              
+              <!-- Login prompt for non-logged users -->
+              <div class="login-prompt mt-3" *ngIf="!isLoggedIn">
+                <p class="text-muted">
+                  <i class="fas fa-info-circle me-2"></i>
+                  يجب تسجيل الدخول أولاً لإنشاء رحلة
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h5>أمان وثقة</h5>
+            <p>جميع السائقين موثقون ومراجعون لضمان سلامتك</p>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <h5>دخل إضافي</h5>
+            <p>احصل على دخل إضافي من رحلاتك اليومية</p>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h5>مجتمع كبير</h5>
+            <p>انضم إلى مجتمع كبير من السائقين والركاب</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it Works Section -->
+  <div class="how-it-works-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center mb-5">
+          <h2 class="section-title">كيف يعمل التطبيق؟</h2>
+          <p class="section-subtitle">خطوات بسيطة لبدء مشاركة رحلاتك</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-icon">
+              <i class="fas fa-user-check"></i>
+            </div>
+            <h6>وثق حسابك</h6>
+            <p>ارفع صورة رخصة القيادة وبيانات المركبة</p>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-icon">
+              <i class="fas fa-route"></i>
+            </div>
+            <h6>أنشئ رحلة</h6>
+            <p>حدد نقطة الانطلاق والوجهة والتوقيت</p>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h6>استقبل الركاب</h6>
+            <p>انتظر حجوزات الركاب لرحلتك</p>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="step-card">
+            <div class="step-number">4</div>
+            <div class="step-icon">
+              <i class="fas fa-money-bill"></i>
+            </div>
+            <h6>احصل على المال</h6>
+            <p>استلم أرباحك بعد إتمام الرحلة</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verify Driver Modal -->
+  <app-verify-driver-modal
+    [isVisible]="showVerifyModal"
+    (onClose)="onModalClose()"
+    (onVerificationComplete)="onVerificationComplete($event)">
+  </app-verify-driver-modal>
+</div>
+

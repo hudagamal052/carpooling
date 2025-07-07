@@ -1,0 +1,45 @@
+# Angular CLI default .gitignore
+
+# Node modules
+/node_modules/
+
+# Build output
+/dist/
+/out-tsc/
+
+# Angular build artifacts
+/.angular/
+/.angular/cache/
+
+# IDEs and editors
+/.idea/
+/.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Compiled files
+*.js
+*.js.map
+
+# Logs
+*.log
+
+# Environment files (optional: ignore if you don't want to expose them)
+/src/environments/environment.*.ts
+
+# Coverage reports
+/coverage/
+
+# NPM package locks
+package-lock.json
+yarn.lock
+
+# Temporary files
+/tmp/
+temp/

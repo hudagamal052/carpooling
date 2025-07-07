@@ -1,0 +1,178 @@
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary fixed-top">
+  <div class="container">
+    <!-- Brand -->
+    <a class="navbar-brand" (click)="navigateToHome()" style="cursor: pointer;">
+      <i class="fas fa-car-side me-2"></i>
+      <span class="brand-text">{{ title }}</span>
+    </a>
+
+    <!-- Mobile Menu Toggle -->
+    <button 
+      class="navbar-toggler" 
+      type="button" 
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="isMenuOpen">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navigation Menu -->
+    <div class="navbar-collapse" [class.show]="isMenuOpen">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateToHome()">
+            <i class="fas fa-home me-1"></i>
+            الرئيسية
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <a class="nav-link" (click)="navigateToCreateTrip()">
+            <i class="fas fa-plus-circle me-1"></i>
+            إنشاء رحلة
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="isLoggedIn && !isVerifiedDriver">
+          <a class="nav-link" (click)="navigateToVerifyDriver()">
+            <i class="fas fa-shield-alt me-1"></i>
+            توثيق الحساب
+          </a>
+        </li>
+      </ul>
+
+      <!-- User Menu -->
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown" *ngIf="isLoggedIn">
+          <a class="nav-link dropdown-toggle user-menu" 
+             href="#" 
+             role="button" 
+             data-bs-toggle="dropdown">
+            <div class="user-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <span class="user-name">{{ currentUser?.name }}</span>
+            <div class="verification-badge" *ngIf="isVerifiedDriver">
+              <i class="fas fa-check-circle"></i>
+            </div>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <div class="dropdown-header">
+                <div class="user-info">
+                  <strong>{{ currentUser?.name }}</strong>
+                  <small class="text-muted d-block">{{ currentUser?.email }}</small>
+                  <span class="badge" [class.bg-success]="isVerifiedDriver" [class.bg-warning]="!isVerifiedDriver">
+                    {{ isVerifiedDriver ? 'سائق موثق' : 'غير موثق' }}
+                  </span>
+                </div>
+              </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li *ngIf="!isVerifiedDriver">
+              <a class="dropdown-item" (click)="navigateToVerifyDriver()">
+                <i class="fas fa-shield-alt me-2"></i>
+                توثيق الحساب
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" (click)="navigateToCreateTrip()">
+                <i class="fas fa-plus-circle me-2"></i>
+                إنشاء رحلة
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-danger" (click)="logout()">
+                <i class="fas fa-sign-out-alt me-2"></i>
+                تسجيل الخروج
+              </a>
+            </li>
+          </ul>
+        </li>
+        
+        <!-- Login Button for non-logged users -->
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <button class="btn btn-outline-light">
+            <i class="fas fa-sign-in-alt me-1"></i>
+            تسجيل الدخول
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<!-- Footer -->
+<footer class="footer bg-dark text-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 mb-4">
+        <h5 class="footer-title">
+          <i class="fas fa-car-side me-2"></i>
+          {{ title }}
+        </h5>
+        <p class="footer-description">
+          منصة مشاركة الرحلات الأولى في المملكة العربية السعودية. 
+          نربط بين السائقين والركاب لتوفير رحلات آمنة ومريحة.
+        </p>
+      </div>
+      <div class="col-lg-2 mb-4">
+        <h6 class="footer-subtitle">الخدمات</h6>
+        <ul class="footer-links">
+          <li><a href="#" (click)="navigateToHome()">مشاركة الرحلات</a></li>
+          <li><a href="#" (click)="navigateToCreateTrip()">إنشاء رحلة</a></li>
+          <li><a href="#" (click)="navigateToVerifyDriver()">توثيق السائق</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 mb-4">
+        <h6 class="footer-subtitle">الدعم</h6>
+        <ul class="footer-links">
+          <li><a href="#">مركز المساعدة</a></li>
+          <li><a href="#">اتصل بنا</a></li>
+          <li><a href="#">الأسئلة الشائعة</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 mb-4">
+        <h6 class="footer-subtitle">الشركة</h6>
+        <ul class="footer-links">
+          <li><a href="#">من نحن</a></li>
+          <li><a href="#">الشروط والأحكام</a></li>
+          <li><a href="#">سياسة الخصوصية</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 mb-4">
+        <h6 class="footer-subtitle">تابعنا</h6>
+        <div class="social-links">
+          <a href="#" class="social-link">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="social-link">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="social-link">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="#" class="social-link">
+            <i class="fab fa-youtube"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <hr class="footer-divider">
+    <div class="row">
+      <div class="col-12 text-center">
+        <p class="footer-copyright">
+          &copy; 2024 {{ title }}. جميع الحقوق محفوظة.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-overlay" [class.show]="isMenuOpen" (click)="closeMenu()"></div>
+
