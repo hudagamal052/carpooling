@@ -1,1 +1,4 @@
-/* Minimal custom styles, most handled by Tailwind */ 
+.bg_nav {
+    background-image: url('/Rectangle 51.png');
+    background-size: cover;
+  }

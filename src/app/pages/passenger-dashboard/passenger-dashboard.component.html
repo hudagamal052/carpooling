@@ -1,0 +1,87 @@
+<div class="w-full h-[500px] rounded-lg overflow-hidden">
+    <div id="map" class="relative w-full h-full"></div>
+    <div class="absolute top-40 right-10 gap-4 z-999 flex flex-col">
+        <button (click)="setSelectionMode(true)"
+            class="border border-blue-500 text-blue-500 bg-white rounded-full p-2 font-semibold hover:bg-blue-50 transition">اختر
+            نقطة الانطلاق</button>
+        <button (click)="setSelectionMode(false)"
+            class="bg-blue-600 text-white rounded-full p-2 font-semibold hover:bg-blue-700 transition">اختر نقطة
+            الوصول</button>
+        <button (click)="getCurrentLocation()"
+            class="border border-cyan-400 text-cyan-500 bg-white rounded-full p-2 font-semibold flex items-center gap-1 hover:bg-cyan-50 transition">
+            استخدم الموقع الحالي
+        </button>
+        <button (click)="resetLocations()"
+            class="border border-yellow-400 text-yellow-500 bg-white rounded-full p-2 font-semibold hover:bg-yellow-50 transition">إعادة
+            تعيين</button>
+    </div>
+</div>
+<!-- Search Bar Below Map -->
+<div class="w-full flex justify-center mb-10 absolute top-119 z-1000">
+    <div
+        class="flex flex-row items-center justify-between bg-white rounded-xl shadow border border-gray-400 overflow-hidden w-full max-w-5xl divide-x divide-gray-400">
+        <!-- From -->
+        <div class="relative w-1/5">
+            <img src="add_location_alt.png" alt="" class="absolute right-2 top-1/2 -translate-y-1/3 w-5 h-5">
+            <input type="text" placeholder="من"
+                class="w-full py-2 pr-8 pl-6 rounded focus:outline-none text-gray-700" />
+        </div>
+        <!-- To -->
+        <div class="relative w-1/5">
+            <img src="distance.png" alt="" class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5">
+            <input type="text" placeholder="الى"
+                class="w-full py-2 pr-8 pl-6 rounded focus:outline-none text-gray-700" />
+        </div>
+        <!-- Date -->
+        <div class="relative w-1/5">
+            <input type="date" placeholder="اليوم" class="w-full py-2 px-4 rounded focus:outline-none text-gray-700" />
+        </div>
+        <!-- Passengers -->
+        <div class="relative flex items-center gap-1 px-4 py-2 w-1/5">
+            <img src="group_add.png" alt="زيادة" class="absolute left-2 top-1/2 -translate-y-1/2 w-5 h-5 cursor-pointer"
+                 (click)="increasePassengers()">
+            <img src="group_remove.png" alt="نقص" class="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 cursor-pointer"
+                 (click)="decreasePassengers()">
+            <span class="text-gray-700 mx-auto">{{ passengerCount }} راكب</span>
+          </div>        <!-- Search Button -->
+        <button class="bg-blue-800 text-white font-bold px-8 py-3 h-full w-1/5">بحث</button>
+    </div>
+</div>
+
+<!-- Available Rides Section -->
+<!-- <div class="mt-10">
+    <h2 class="text-2xl font-bold text-center text-green-600 mb-8">اختر من الرحلات المتاحة</h2>
+    <div class="flex flex-col items-center gap-6">
+        <div *ngFor="let ride of rides"
+            class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-xl flex flex-col md:flex-row items-center justify-between text-right">
+            <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="font-bold text-lg text-blue-700">{{ ride.from }}</span>
+                    <span class="text-gray-500">{{ ride.fromDetails }}</span>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="font-bold text-lg text-green-700">{{ ride.to }}</span>
+                    <span class="text-gray-500">{{ ride.toDetails }}</span>
+                </div>
+                <div class="flex items-center gap-4 mt-2">
+                    <span class="text-gray-600">نوع السيارة: <span class="font-bold">{{ ride.carType }}</span></span>
+                    <span class="text-gray-600">الكراسي المتاحة: <span class="font-bold text-red-600">{{
+                            ride.availableSeats }}</span></span>
+                </div>
+            </div>
+            <div class="flex flex-col items-center justify-center mt-4 md:mt-0 md:ml-6">
+                <img [src]="ride.driver.avatar" alt="صورة السائق"
+                    class="w-16 h-16 rounded-full border-2 border-gray-300 mb-2">
+                <span class="font-bold text-gray-800">{{ ride.driver.name }}</span>
+                <span class="text-yellow-500 font-bold flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
+                    </svg>
+                    {{ ride.driver.rating }}
+                </span>
+            </div>
+        </div>
+    </div>
+</div> -->
