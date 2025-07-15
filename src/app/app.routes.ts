@@ -20,6 +20,7 @@ export const routes: Routes = [
       { path: 'trip-details', component: TripDetailsComponent },
       { path: 'create-trip', component: CreateTripComponent },
       { path: 'profile', component: ProfileComponent },
+      { path: 'verify-driver', loadComponent: () => import('./pages/verify-driver/verify-driver.component').then(m => m.VerifyDriverComponent) },
     ]
   },
   { path: 'auth', component: AuthComponent },

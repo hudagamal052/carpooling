@@ -64,12 +64,10 @@ export class CreateTripComponent implements OnInit {
 
   ngOnInit(): void {
     // التحقق مما إذا كان المستخدم سائقًا موثقًا
-    // if (!this.authService.isVerifiedDriver()) {
-      // إذا لم يكن موثقًا، قم بتوجيهه لصفحة التوثيق
-    //   this.router.navigate(['/verify-driver']);
-    //   return;
-    // }
-
+    if (!this.authService.isVerifiedDriver()) {
+      this.router.navigate(['/verify-driver']);
+      return;
+    }
     // بناء النموذج
     this.tripForm = this.fb.group({
       // Step 1

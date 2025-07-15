@@ -12,7 +12,7 @@ import {
   faUserCheck, faCameraRetro, faCar, faClipboardCheck, faEdit,
   faArrowRight, faArrowLeft, faInfoCircle, faTimes
 } from '@fortawesome/free-solid-svg-icons';
-// import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-verify-driver',
@@ -151,7 +151,7 @@ export class VerifyDriverComponent implements OnInit {
       return;
     }
 
-    const currentUserId = this.authService.currentUser()?.uid;
+    const currentUserId = this.authService.getCurrentUserId();
     if (!currentUserId) {
       this.showToast('لا يمكن تحديد هوية المستخدم. الرجاء تسجيل الدخول مرة أخرى.', 'error');
       return;

@@ -1,22 +1,25 @@
 <nav class="fixed flex items-center justify-between h-20 shadow-md z-1000 w-full bg-white">
   <div class="flex items-center gap-4 bg_nav h-full w-[45%] px-6">
-    <!-- <img src="/assets/logo.png" alt="Logo" class="h-10"> -->
     <span class="font-bold text-4xl text-white px-6 pl-14">مشوار</span>
     <ul class="flex gap-8 font-medium text-white">
       <li><a href="#" class="">البحث عن رحلة</a></li>
-      <li><a href="#" class="">نشر رحلة</a></li>
+      <li>
+        <button *ngIf="isLoggedIn && isVerifiedDriver" (click)="goToCreateTrip()" class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">إنشاء رحلة</button>
+        <button *ngIf="isLoggedIn && !isVerifiedDriver" (click)="goToVerifyDriver()" class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">توثيق كسائق</button>
+      </li>
     </ul>
-</div>
+  </div>
   <ul class="flex gap-6 items-center font-medium px-6">
     <li><a href="#" class="hover:text-[#0BB097]">كيف يعمل</a></li>
     <button type="button"
       (click)="toggleDarkMode()"
       class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-yellow-300 focus:outline-none transition"
       [attr.aria-label]="isDarkMode ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع الليلي'">
-      <!-- <span *ngIf="!isDarkMode">🌙</span>
-      <span *ngIf="isDarkMode">☀️</span> -->
     </button>
-    <button type="submit"
-    class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">تسجيل الدخول</button>
+    <button *ngIf="!isLoggedIn" type="button"
+      (click)="goToLogin()"
+      class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">
+      تسجيل الدخول
+    </button>
   </ul>
 </nav> 
