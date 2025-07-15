@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NgClass, CommonModule } from '@angular/common';
+import {CommonModule } from '@angular/common';
 @Component({
   selector: 'app-landing',
-  imports: [NgClass, CommonModule],
+  imports: [CommonModule],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css'
 })

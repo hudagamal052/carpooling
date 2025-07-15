@@ -1,0 +1,113 @@
+
+  .content-left, .content-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    transition: all 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* الحالة الأولية */
+  .login-state .content-left,
+  .register-state .content-right {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* عند التحول للتسجيل */
+  .register-state .content-left {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .login-state .content-right {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* عند التبديل - إخفاء الأطراف */
+  .transition-hidden {
+    opacity: 0;
+    transform: translateX(40px);
+    pointer-events: none;
+  }
+    
+  .content-left, .content-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    transition: all 0.5s ease;
+  }
+  
+  .gradient-bg {
+    background: linear-gradient(0deg, #0B1225, #2B438B);
+    position: relative;
+    overflow: hidden;
+  }
+    
+  input {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
+  
+  button {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .content-left, .content-right {
+      flex: 100%;
+      height: 50vh;
+    }
+  
+    .register-state .content-left {
+      order: 1;
+    }
+  
+    .register-state .content-right {
+      order: 2;
+    }
+  
+    .illustration-content, .form-container {
+      max-width: 20rem;
+    }
+  }
+
+  .form-active {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(0deg, #0B1225, #2B438B);
+    margin: 0;
+    height: 100%;
+    width: 1/2;
+    overflow: hidden; /* مهم جداً */
+    border-radius: 1.4rem; /* نفس rounded-3xl */
+  }
+  
+  .form-active::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('/leeeh.png') center/cover no-repeat;
+    opacity: 0.5; /* عدلي الشفافية حسب رغبتك */
+    z-index: 0;
+    border-radius: 1.4rem; /* نفس rounded-3xl */
+
+  }
+  /* اجعلي محتوى الفورم فوق الخلفية */
+.form-active > * {
+  position: relative;
+  z-index: 1;
+}
+/* .gradient-border {
+  border: 2px solid transparent;
+  background-image:
+    linear-gradient(to right, #5882C1, #5882C1);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+} */

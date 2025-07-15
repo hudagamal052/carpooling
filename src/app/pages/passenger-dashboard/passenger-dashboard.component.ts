@@ -2,6 +2,8 @@ import { Component, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit } fro
 import { NgClass, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
+import { Trip } from '../../models/trip.model';
+import { TripService } from '../../services/trip.service';
 
 export interface Location {
   lat: number;
@@ -33,26 +35,9 @@ export interface Ride {
 })
 export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   passengerCount = 1;
-  rides: Ride[] = [
-    {
-      from: 'شارع المطاحن، العبور الجديدة',
-      fromDetails: 'الساعة 01:48 PM',
-      to: 'سوهاج مدينة ناصر',
-      toDetails: 'تقييم 4.8★',
-      carType: 'سيدان',
-      availableSeats: 3,
-      driver: { name: 'كريم سالم', avatar: 'https://via.placeholder.com/40', rating: 4.8 },
-    },
-    {
-      from: 'مدينة نصر، القاهرة',
-      fromDetails: 'الساعة 04:30 PM',
-      to: 'الهرم، الجيزة',
-      toDetails: 'تقييم 4.6★',
-      carType: 'هاتشباك',
-      availableSeats: 2,
-      driver: { name: 'محمد علي', avatar: 'https://via.placeholder.com/40', rating: 4.6 },
-    },
-  ];
+  rides: Trip[] = [];
+
+  constructor(private tripService: TripService) {}
 
   increasePassengers() {
     this.passengerCount++;
@@ -89,6 +74,9 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
       iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
       shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
     });
+    this.tripService.getTrips().subscribe((trips: Trip[]) => {
+      this.rides = trips;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -115,22 +103,20 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
     this.getCurrentLocation();
   }
 
-  private onMapClick(latlng: L.LatLng): void {
-    const location: Location = { lat: latlng.lat, lng: latlng.lng };
-
-    if (this.isSelectingPickup) {
-      this.setPickupLocation(location);
-      this.fromLocationText = "Selected: " + latlng.lat + ", " + latlng.lng;
-      this.isSelectingPickup = false;
-    } else {
-      this.setDropoffLocation(location);
-      this.toLocationText = "Selected: " + latlng.lat + ", " + latlng.lng;
+  private async reverseGeocode(location: Location): Promise<string> {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.lat}&lon=${location.lng}&accept-language=ar`
+      );
+      const data = await response.json();
+      return data.display_name || `${location.lat}, ${location.lng}`;
+    } catch (error) {
+      console.error('Reverse geocoding error:', error);
+      return `${location.lat}, ${location.lng}`;
     }
-
-    this.emitLocationChange();
   }
 
-  private setPickupLocation(location: Location): void {
+  private async setPickupLocation(location: Location): Promise<void> {
     this.pickupLocation = location;
 
     if (this.pickupMarker) {
@@ -149,9 +135,12 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
     this.pickupMarker = L.marker([location.lat, location.lng], { icon: greenIcon })
       .addTo(this.map)
       .bindPopup("موقع الانطلاق");
+
+    // Get address and set to input
+    this.fromLocationText = await this.reverseGeocode(location);
   }
 
-  private setDropoffLocation(location: Location): void {
+  private async setDropoffLocation(location: Location): Promise<void> {
     this.dropoffLocation = location;
 
     if (this.dropoffMarker) {
@@ -170,6 +159,22 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
     this.dropoffMarker = L.marker([location.lat, location.lng], { icon: redIcon })
       .addTo(this.map)
       .bindPopup("موقع الوصول");
+
+    // Get address and set to input
+    this.toLocationText = await this.reverseGeocode(location);
+  }
+
+  private async onMapClick(latlng: L.LatLng): Promise<void> {
+    const location: Location = { lat: latlng.lat, lng: latlng.lng };
+
+    if (this.isSelectingPickup) {
+      await this.setPickupLocation(location);
+      this.isSelectingPickup = false;
+    } else {
+      await this.setDropoffLocation(location);
+    }
+
+    this.emitLocationChange();
   }
 
   setSelectionMode(isPickup: boolean): void {
@@ -263,27 +268,63 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
     });
   }
 
+  // Set marker and location by address (from input field)
+  async setLocationByAddress(type: 'from' | 'to', address: string): Promise<void> {
+    if (!address.trim()) return;
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&accept-language=ar`
+      );
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        const location: Location = { lat: parseFloat(lat), lng: parseFloat(lon) };
+        if (type === 'from') {
+          await this.setPickupLocation(location);
+          this.isSelectingPickup = false;
+          this.map.setView([location.lat, location.lng], 15);
+        } else {
+          await this.setDropoffLocation(location);
+          this.map.setView([location.lat, location.lng], 15);
+        }
+        this.emitLocationChange();
+      }
+    } catch (error) {
+      console.error('خطأ في البحث عن العنوان:', error);
+    }
+  }
+
   // Updated method with proper typing and null check
   onInputChange(type: string, event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target && target.value !== undefined) {
       const value = target.value;
-
       if (type === 'from') {
         this.fromLocationText = value;
         if (value.trim()) {
-          this.searchQuery = value;
-          this.isSelectingPickup = true;
-          this.searchLocation();
+          this.setLocationByAddress('from', value);
         }
       } else if (type === 'to') {
         this.toLocationText = value;
         if (value.trim()) {
-          this.searchQuery = value;
-          this.isSelectingPickup = false;
-          this.searchLocation();
+          this.setLocationByAddress('to', value);
         }
       }
+    }
+  }
+
+  // Method to search for rides based on locations
+  searchRides(): void {
+    if (this.fromLocationText.trim() && this.toLocationText.trim()) {
+      this.tripService.getTripsByLocation(this.fromLocationText, this.toLocationText)
+        .subscribe((trips: Trip[]) => {
+          this.rides = trips;
+        });
+    } else {
+      // If no specific locations, get all trips
+      this.tripService.getTrips().subscribe((trips: Trip[]) => {
+        this.rides = trips;
+      });
     }
   }
 }

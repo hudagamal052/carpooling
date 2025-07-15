@@ -1,0 +1,165 @@
+
+:host {
+    display: block;
+    font-family: 'Cairo', sans-serif;
+    background-color: #e2e4f5; 
+    padding: 24px;
+    direction: rtl;
+  }
+  
+  .page-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px; 
+    
+  }
+  
+  .col-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+  
+  .col-9 {
+    flex: 0 0 75%;
+    max-width: 75%;
+  }
+  
+  .card {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; 
+  }
+  
+  .profile-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .profile-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .profile-info {
+    text-align: right;
+  }
+  
+  .profile-greeting {
+    color: #6c757d;
+  }
+  
+  .profile-name {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: #212529;
+  }
+  
+  .menu-item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .menu-item-content {
+    font-weight: 600;
+    color: #343a40;
+  }
+  
+  .icon-blue {
+    color: #2B438B;
+    font-size: 1.125rem;
+  }
+  
+  .icon-flipped {
+    transform: scaleX(-1);
+  }
+  
+  .divider {
+    border-top: 1px solid #e9ecef;
+    margin: 12px 0;
+  }
+  
+  .submenu {
+    padding-right: 36px;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .submenu a {
+    color: #27386d;
+    text-decoration: underline;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .submenu a:hover {
+    color: #507af0;
+  }
+  
+  .submenu a.active-link {
+    font-weight: 800;
+    text-decoration: none;
+    color: #152188;
+  }
+  
+  
+  
+  .info-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 32px;
+  }
+  
+  .form-container {
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .illustration-container, .gallery-container {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  
+  .form-title { font-size: 1.25rem; font-weight: 700; color: #343a40; margin-bottom: 20px; text-align: right; }
+  .form-row { display: flex; flex-direction: column; align-items: flex-end; }
+  .form-label { font-size: 0.875rem; color: #6c757d; margin-bottom: 8px;  text-align: right; width: 100%;      }
+  .input-wrapper { width: 100%; position: relative; display: flex; align-items: right;text-align: right; }
+  .form-input { background-color: #f8f9fa; border: 1px solid #f8f9fa; border-radius: 8px; padding: 12px 16px; width: 100%; text-align: right; font-size: 1rem; color: #495057; transition: border-color 0.2s; }
+  .form-input:focus { outline: none; border-color: #14b8a6; }
+  .edit-icon { position: absolute; left: 16px; color: #14b8a6; font-size: 0.875rem; }
+  .radio-group-rtl { display: flex; gap: 24px; justify-content: flex-end; width: 100%; padding: 12px 0; }
+  .phone-prefix-rtl { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); }
+  .phone-input-rtl { padding-right: 52px; }
+  .color-preview-rtl { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background-color: black; border-radius: 50%; }
+  .illustration-image { max-width: 100%; }
+  .main-image-wrapper .main-image { width: 100%; border-radius: 12px; object-fit: cover; }
+  .thumbnails-wrapper { display: flex; gap: 12px; }
+  .thumbnail { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 2px solid transparent; }
+  .thumbnail:hover { border-color: #2B438B; }
+  .add-image-button { display: flex; align-items: center; justify-content: center; background-color: #e9ecef; color: #6c757d; border: 2px dashed #ced4da; font-size: 24px; }
+  .save-button { background-color: #ffffff; color: #14b8a6; border: 1px solid #14b8a6; border-radius: 8px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 50%;}
+  .save-button:hover { background-color: #14b8a6; color: #ffffff; }
+  
+  :host ::ng-deep .mat-mdc-form-field { display: none !important; }
+  :host ::ng-deep .mat-mdc-radio-button .mdc-radio__native-control:enabled:checked + .mdc-radio__background .mdc-radio__outer-circle { border-color: #14b8a6; }
+  :host ::ng-deep .mat-mdc-radio-button .mdc-radio__native-control:enabled + .mdc-radio__background .mdc-radio__inner-circle { background-color: #14b8a6; }
+  

@@ -9,6 +9,13 @@
 </div>
   <ul class="flex gap-6 items-center font-medium px-6">
     <li><a href="#" class="hover:text-[#0BB097]">كيف يعمل</a></li>
+    <button type="button"
+      (click)="toggleDarkMode()"
+      class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-yellow-300 focus:outline-none transition"
+      [attr.aria-label]="isDarkMode ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع الليلي'">
+      <!-- <span *ngIf="!isDarkMode">🌙</span>
+      <span *ngIf="isDarkMode">☀️</span> -->
+    </button>
     <button type="submit"
     class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">تسجيل الدخول</button>
   </ul>
