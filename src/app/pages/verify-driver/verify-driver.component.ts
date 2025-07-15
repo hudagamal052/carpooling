@@ -159,35 +159,57 @@ export class VerifyDriverComponent implements OnInit {
 
     this.isSubmitting = true;
     const formValue = this.verificationForm.value;
-    const formData = new FormData();
 
-    // بناء FormData بالأسماء الصحيحة من Swagger
-    formData.append('ApplicationUserId', currentUserId);
-    formData.append('DriverDescription', formValue.description || '');
-    formData.append('VehicleDetailsCommand.DriverId', currentUserId);
-    formData.append('VehicleDetailsCommand.Model', formValue.vehicleModel);
-    formData.append('VehicleDetailsCommand.Color', formValue.vehicleColor);
-    formData.append('VehicleDetailsCommand.PlateNumber', formValue.plateNumber);
-    formData.append('VehicleDetailsCommand.SeatsNumber', formValue.vehicleSeats.toString());
-    formData.append('VehicleDetailsCommand.Description', '');
+    // 1. إرسال البيانات النصية فقط (كـ FormData مسطح)
+    const driverFormData = new FormData();
+    driverFormData.append('ApplicationUserId', currentUserId);
+    driverFormData.append('DriverDescription', formValue.description || '');
+    driverFormData.append('VehicleDetailsCommand.DriverId', currentUserId);
+    driverFormData.append('VehicleDetailsCommand.Model', formValue.vehicleModel);
+    driverFormData.append('VehicleDetailsCommand.Color', formValue.vehicleColor);
+    driverFormData.append('VehicleDetailsCommand.PlateNumber', formValue.plateNumber);
+    driverFormData.append('VehicleDetailsCommand.SeatsNumber', formValue.vehicleSeats.toString());
+    driverFormData.append('VehicleDetailsCommand.Description', '');
 
-    if (formValue.licenseFile) { formData.append('DriverLicense', formValue.licenseFile); }
-    if (formValue.driverIdFile) { formData.append('Identity', formValue.driverIdFile); }
-    if (formValue.vehicleImages && formValue.vehicleImages.length > 0) {
-      (formValue.vehicleImages as File[]).forEach(file => {
-        formData.append('VehicleRegistration', file);
-      });
-    }
-
-    this.registerDriverService.registerDriver(formData)
+    this.registerDriverService.registerDriver(driverFormData)
       .pipe(finalize(() => this.isSubmitting = false))
       .subscribe({
         next: (response) => {
           if (response.data) {
-            this.showToast('تم إرسال طلب التوثيق بنجاح!', 'success');
-            setTimeout(() => this.router.navigate(['/']), 3000);
+            // 2. إذا نجح، أرسل الملفات
+            const formData = new FormData();
+            formData.append('Comment', formValue.description || '');
+            if (formValue.licenseFile) {
+              // DriverLicense كـ array
+              formData.append('DriverLicense', formValue.licenseFile);
+            }
+            if (formValue.driverIdFile) {
+              // Identity كـ array
+              formData.append('Identity', formValue.driverIdFile);
+            }
+            if (formValue.vehicleImages && formValue.vehicleImages.length > 0) {
+              (formValue.vehicleImages as File[]).forEach(file => {
+                formData.append('VehicleRegistration', file);
+              });
+            }
+            this.isSubmitting = true;
+            this.registerDriverService.uploadDocuments(formData)
+              .pipe(finalize(() => this.isSubmitting = false))
+              .subscribe({
+                next: (uploadRes) => {
+                  if (uploadRes.data) {
+                    this.showToast('تم إرسال طلب التوثيق والملفات بنجاح!', 'success');
+                    setTimeout(() => this.router.navigate(['/']), 3000);
+                  } else {
+                    this.showToast(uploadRes.message || 'تم حفظ البيانات لكن فشل رفع الملفات.', 'error');
+                  }
+                },
+                error: (err) => {
+                  this.showToast('تم حفظ البيانات لكن حدث خطأ في رفع الملفات.', 'error');
+                }
+              });
           } else {
-            this.showToast(response.message || 'فشل إرسال الطلب.', 'error');
+            this.showToast(response.message || 'فشل إرسال البيانات.', 'error');
           }
         },
         error: (err) => {

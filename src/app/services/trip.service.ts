@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Trip } from '../models/trip.model';
+import { CreateTripRequest } from '../models/trip.model';
+import { API_BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +68,10 @@ export class TripService {
         throw error;
       })
     );
+  }
+
+  createTrip(payload: CreateTripRequest): Observable<any> {
+    return this.http.post<any>(`${API_BASE_URL}/Trip/CreateTrip`, payload);
   }
 
   // Mock data for development/testing

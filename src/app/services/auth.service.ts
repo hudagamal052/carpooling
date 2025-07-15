@@ -94,11 +94,25 @@ export class AuthService {
   public getCurrentUserId(): string | null {
     const token = this.getToken();
     if (!token) return null;
-    // JWT: header.payload.signature
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      // Adjust the property name if your payload uses a different key for user id
-      return payload.uid || payload.userId || payload.sub || null;
+      // استخدم الحقل الصحيح للـ UserId
+      return payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || null;
+    } catch {
+      return null;
+    }
+  }
+
+  public getCurrentUser(): { name: string; email: string; profileImageUrl: string } | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return {
+        name: payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || 'مستخدم',
+        email: payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || '',
+        profileImageUrl: 'https://i.pravatar.cc/40'
+      };
     } catch {
       return null;
     }

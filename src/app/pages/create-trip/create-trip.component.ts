@@ -7,6 +7,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faRoute } from '@fortawesome/free-solid-svg-icons';
 // --- 1. استيراد الخدمات والنماذج الصحيحة ---
 import { AuthService } from '../../services/auth.service';
+import { TripService } from '../../services/trip.service';
 // import { CreateTripCommand, Location } from '../../models';
 import {
   faShieldAlt, faCheckCircle, faExclamationTriangle, faIdCard,
@@ -26,6 +27,7 @@ export class CreateTripComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private tripService = inject(TripService);
    iconRoute = faRoute;
    icons = {
     main: faShieldAlt,
@@ -130,51 +132,37 @@ export class CreateTripComponent implements OnInit {
   // --- 8. دالة الإرسال النهائية ---
   onSubmit(): void {
     if (!this.tripForm.valid) {
-      // يمكنك إضافة تنبيه هنا إذا أردت
       return;
     }
 
     this.isSubmitting.set(true);
     const formValue = this.tripForm.value;
 
-    // بناء كائن الموقع لنقطة الانطلاق
-    // const departureLocation: Location = {
-    //   city: formValue.startCity,
-    //   address: formValue.startCity, // يمكن تعديلها لاحقًا لإضافة عنوان تفصيلي
-    //   latitude: 0, // يجب الحصول عليها من خدمة خرائط
-    //   longitude: 0
-    // };
+    // بناء CreateTripRequest
+    const payload = {
+      departureCity: formValue.startCity,
+      departureLatitude: 0, // يمكن ربطها لاحقاً بخدمة خرائط
+      departureLongitude: 0,
+      destinationCity: formValue.destinationCity,
+      destinationLatitude: 0,
+      destinationLongitude: 0,
+      departureTime: new Date(formValue.departureDateTime).toISOString(),
+      seatsAvailable: Number(formValue.availableSeats),
+      price: Number(formValue.pricePerSeat),
+      notes: formValue.notes || ''
+    };
 
-    // بناء كائن الموقع للوجهة
-    // const destinationLocation: Location = {
-    //   city: formValue.destinationCity,
-    //   address: formValue.destinationCity,
-    //   latitude: 0,
-    //   longitude: 0
-    // };
-
-    // بناء الـ payload الذي يطابق CreateTripCommand
-    // const payload: CreateTripCommand = {
-    //   departure: departureLocation,
-    //   destination: destinationLocation,
-    //   departureTime: new Date(formValue.departureDateTime).toISOString(),
-    //   seatsAvailable: Number(formValue.availableSeats),
-    //   price: Number(formValue.pricePerSeat),
-    //   pickupLocation: departureLocation, // حاليًا هي نفس نقطة الانطلاق
-    //   dropoffLocation: destinationLocation // حاليًا هي نفس الوجهة
-    // };
-
-    // this.tripService.createTrip(payload)
-    //   .pipe(finalize(() => this.isSubmitting.set(false)))
-    //   .subscribe({
-    //     next: () => {
-    //       this.isSuccess.set(true);
-    //       setTimeout(() => this.router.navigate(['/dashboard']), 3000); // افترض وجود صفحة dashboard
-    //     },
-    //     error: (err) => {
-    //       console.error('Failed to create trip:', err);
-    //     }
-    //   });
+    this.tripService.createTrip(payload)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.isSuccess.set(true);
+          setTimeout(() => this.router.navigate(['/my-rides']), 3000);
+        },
+        error: (err: any) => {
+          console.error('Failed to create trip:', err);
+        }
+      });
   }
 
   // --- 9. دوال التنسيق للعرض في صفحة المراجعة ---

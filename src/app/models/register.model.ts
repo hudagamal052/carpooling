@@ -18,10 +18,6 @@ export interface RegisterDriverRequest {
     SeatsNumber: number;
     Description: string;
   };
-  // Optionally, you can add file fields if needed for type safety
-  // DriverLicense?: File;
-  // Identity?: File;
-  // VehicleRegistration?: File[];
 }
 
 export interface BooleanResponse {

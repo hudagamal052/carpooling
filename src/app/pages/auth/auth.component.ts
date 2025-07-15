@@ -1,7 +1,7 @@
 import { Component, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LoginData } from '../../models/login.model';
 import { RegisterData } from '../../models/register.model';
@@ -33,7 +33,7 @@ export class AuthComponent {
     return this.isRegisterState;
   }
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   toggleState(): void {
     const left = document.querySelector('.content-left') as HTMLElement;
@@ -56,6 +56,7 @@ export class AuthComponent {
       next: (res) => {
         // مثال: توجيه المستخدم أو حفظ التوكن
         // this.router.navigate(['/dashboard']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.loginError = 'فشل تسجيل الدخول. تأكد من البيانات.';

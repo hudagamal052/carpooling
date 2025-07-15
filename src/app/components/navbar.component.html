@@ -2,10 +2,10 @@
   <div class="flex items-center gap-4 bg_nav h-full w-[45%] px-6">
     <span class="font-bold text-4xl text-white px-6 pl-14">مشوار</span>
     <ul class="flex gap-8 font-medium text-white">
-      <li><a href="#" class="">البحث عن رحلة</a></li>
-      <li>
-        <button *ngIf="isLoggedIn && isVerifiedDriver" (click)="goToCreateTrip()" class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">إنشاء رحلة</button>
-        <button *ngIf="isLoggedIn && !isVerifiedDriver" (click)="goToVerifyDriver()" class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">توثيق كسائق</button>
+      <li><a href="#" class="">البحث عن رحلة</a></li>      
+      <li class="flex ">
+        <button (click)="goToCreateTrip()" class="hover:bg-[#0BB097] hover:border-0 font-bold px-10 rounded-lg whitespace-nowrap border-1">إنشاء رحلة</button>
+        <button *ngIf="isLoggedInFn() && !isVerifiedDriverFn()" (click)="goToVerifyDriver()" class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">توثيق كسائق</button>
       </li>
     </ul>
   </div>
@@ -16,10 +16,46 @@
       class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-yellow-300 focus:outline-none transition"
       [attr.aria-label]="isDarkMode ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع الليلي'">
     </button>
-    <button *ngIf="!isLoggedIn" type="button"
+    <button *ngIf="!isLoggedInFn()" type="button"
       (click)="goToLogin()"
       class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">
       تسجيل الدخول
     </button>
+
+    <!-- حالة المستخدم المسجل -->
+    <ng-container *ngIf="isLoggedInFn()">
+      <!-- القائمة المنسدلة للملف الشخصي -->
+      <div class="relative">
+        <button (click)="toggleDropdown()" class="flex items-center gap-2 focus:outline-none p-1 rounded-full">
+          <img [src]="currentUser()?.profileImageUrl || 'https://i.pravatar.cc/40'" alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-primary-color transition-all">
+          <span class="hidden sm:block font-semibold text-gray-800">{{ currentUser()?.name }}</span>
+          <!-- شارة التوثيق -->
+          <i *ngIf="isVerifiedDriverFn()" class="bi bi-patch-check-fill text-green-500 text-lg" title="حساب موثق"></i>
+          <i class="bi text-gray-600" [ngClass]="isDropdownOpen() ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+        </button>
+
+        <!-- محتويات القائمة المنسدلة -->
+        <div *ngIf="isDropdownOpen()" class="absolute left-0 mt-2 w-60 bg-white rounded-md shadow-lg py-1 z-20 text-right border border-gray-100">
+          <div class="px-4 py-3 border-b border-gray-200">
+            <p class="font-bold text-gray-800 truncate">{{ currentUser()?.name }}</p>
+            <p class="text-sm text-gray-500 truncate">{{ currentUser()?.email }}</p>
+          </div>
+          <a (click)="navigateTo('/profile')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
+            <i class="bi bi-person-circle text-lg"></i>
+            <span>الملف الشخصي</span>
+          </a>
+          <!-- زر توثيق الحساب يظهر فقط إذا لم يكن موثق كسائق -->
+          <a *ngIf="!isVerifiedDriverFn()" (click)="navigateTo('/verify-driver')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
+            <i class="bi bi-shield-check text-lg"></i>
+            <span>توثيق الحساب</span>
+          </a>
+          <div class="border-t border-gray-200 my-1"></div>
+          <a (click)="logout()" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer transition-colors duration-150">
+            <i class="bi bi-box-arrow-right text-lg"></i>
+            <span>تسجيل الخروج</span>
+          </a>
+        </div>
+      </div>
+    </ng-container>
   </ul>
 </nav> 

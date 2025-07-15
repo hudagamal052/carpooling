@@ -8,4 +8,17 @@ export interface Trip {
     avatar: string;
     rating: number;
   };
+}
+
+export interface CreateTripRequest {
+  departureCity: string;
+  departureLatitude: number;
+  departureLongitude: number;
+  destinationCity: string;
+  destinationLatitude: number;
+  destinationLongitude: number;
+  departureTime: string; // ISO string
+  seatsAvailable: number;
+  price: number;
+  notes: string;
 } 

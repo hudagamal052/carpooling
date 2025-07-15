@@ -1,7 +1,7 @@
 import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service'; // تأكد من صحة المسار
+import { AuthService } from '../services/auth.service'; // تم تصحيح المسار
 
 // --- هذا هو التعريف الحديث للـ Interceptor كدالة ---
 export const authInterceptor: HttpInterceptorFn = (
