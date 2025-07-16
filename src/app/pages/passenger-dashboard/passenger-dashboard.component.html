@@ -58,9 +58,9 @@
             class="bg-white rounded-2xl shadow-2xl hover:shadow-4xl p-2 pb-4 w-full max-w-xl flex flex-col items-center justify-between text-right divide-y divide-gray-400 my-10">
             <div class="flex items-center justify-center mt-4 md:mt-0 md:ml-6 w-full">
             <div class="px-4 flex flex-col gap-2 items-center w-1/3">
-                <img [src]="ride.driver.avatar" alt="صورة السائق"
+                <img [src]="ride.driverImageUrl" alt="صورة السائق"
                 class="w-16 h-16 rounded-full border-2 border-gray-300 mb-2">
-                <span class="font-bold text-gray-800">{{ ride.driver.name }}</span>
+                <span class="font-bold text-gray-800">{{ ride.driverName }}</span>
                 <div class="flex items-center justify-center gap-1">
                 <span class="text-white font-semibold flex items-center justify-center gap-1 bg-yellow-500 rounded-md w-15">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="currentColor"
@@ -68,7 +68,7 @@
                     <path
                         d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
                 </svg>
-                {{ ride.driver.rating }}
+                {{ ride.rate }}
                 </span>
                 <span class="text-gray-500">{{ ride.carType }}</span>
             </div>
@@ -77,20 +77,30 @@
                 <div class="flex flex-col justify-between h-full py-6 px-2 w-2/3">
                     <div class="flex items-center gap-2 mb-2">
                         <img src="add_location_alt.png" alt="" class="w-5 h-5">
-                        <span class="text-lg">{{ ride.from }}</span>
+                        <span class="text-lg">{{ ride.departureCity }}</span>
                     </div>
                     <div class="flex items-center gap-2 mb-2">
                         <img src="distance.png" alt="" class="w-5 h-5">
-                        <span class="text-lg">{{ ride.to }}</span>
+                        <span class="text-lg">{{ ride.destinationCity }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-calendar-alt text-blue-500"></i>
+                        <span class="text-lg">{{ ride.departureTime | date:'medium' }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-chair text-green-500"></i>
+                        <span class="text-lg">{{ ride.availableSeats }} مقعد متاح</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-money-bill-wave text-yellow-600"></i>
+                        <span class="text-lg">{{ ride.price }} جنيه/مقعد</span>
                     </div>
                 </div>
             </div>
-            
-
             <div class="flex">
                 <div class="flex items-center gap-4 mt-2 divide-x divide-gray-400">
                     <span class="flex flex-col items-center pl-4">
-                        <span class="font-semibold">لون السيارة</span>
+                        <span class="font-semibold">نوع السيارة</span>
                         <span class="">{{ ride.carType }}</span>
                     </span>
                     <span class="flex flex-col items-center pl-4">
@@ -98,8 +108,8 @@
                         <span class="">{{ ride.availableSeats }}</span>
                     </span>
                     <span class="flex flex-col items-center">
-                        <span class="font-semibold">تصنيف السيارة</span>
-                        <span class="">رياضية</span>
+                        <span class="font-semibold">تقييم السائق</span>
+                        <span class="">{{ ride.rate }}</span>
                     </span>
                 </div>
             </div>

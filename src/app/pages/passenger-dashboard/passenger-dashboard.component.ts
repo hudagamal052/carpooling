@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit } fro
 import { NgClass, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
-import { Trip } from '../../models/trip.model';
+import { TripCard } from '../../models/trip.model';
 import { TripService } from '../../services/trip.service';
 
 export interface Location {
@@ -35,7 +35,7 @@ export interface Ride {
 })
 export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   passengerCount = 1;
-  rides: Trip[] = [];
+  rides: TripCard[] = [];
 
   constructor(private tripService: TripService) {}
 
@@ -74,7 +74,7 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
       iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
       shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
     });
-    this.tripService.getTrips().subscribe((trips: Trip[]) => {
+    this.tripService.getAllTrips().subscribe((trips: TripCard[]) => {
       this.rides = trips;
     });
   }
@@ -316,13 +316,14 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
   // Method to search for rides based on locations
   searchRides(): void {
     if (this.fromLocationText.trim() && this.toLocationText.trim()) {
+      // يمكنك إضافة فلترة التاريخ إذا كان لديك متغير للتاريخ
       this.tripService.getTripsByLocation(this.fromLocationText, this.toLocationText)
-        .subscribe((trips: Trip[]) => {
+        .subscribe((trips: TripCard[]) => {
           this.rides = trips;
         });
     } else {
       // If no specific locations, get all trips
-      this.tripService.getTrips().subscribe((trips: Trip[]) => {
+      this.tripService.getAllTrips().subscribe((trips: TripCard[]) => {
         this.rides = trips;
       });
     }

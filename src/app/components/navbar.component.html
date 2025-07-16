@@ -1,24 +1,24 @@
 <nav class="fixed flex items-center justify-between h-20 shadow-md z-1000 w-full bg-white">
   <div class="flex items-center gap-4 bg_nav h-full w-[45%] px-6">
     <span class="font-bold text-4xl text-white px-6 pl-14">مشوار</span>
-    <ul class="flex gap-8 font-medium text-white">
-      <li><a href="#" class="">البحث عن رحلة</a></li>      
-      <li class="flex ">
-        <button (click)="goToCreateTrip()" class="hover:bg-[#0BB097] hover:border-0 font-bold px-10 rounded-lg whitespace-nowrap border-1">إنشاء رحلة</button>
+    <ul class="flex gap-8 font-medium text-white p-0 m-0">
+      <button (click)="navigateTo('/passenger-dashboard')" class="hover:text-gray-100 border-0 font-bold cursor-pointer">البحث عن رحلة</button>
+      <button (click)="goToCreateTrip()" class="hover:text-gray-100 border-0 font-bold cursor-pointer">إنشاء رحلة</button>
+      <li class="flex">
         <button *ngIf="isLoggedInFn() && !isVerifiedDriverFn()" (click)="goToVerifyDriver()" class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">توثيق كسائق</button>
       </li>
     </ul>
   </div>
-  <ul class="flex gap-6 items-center font-medium px-6">
-    <li><a href="#" class="hover:text-[#0BB097]">كيف يعمل</a></li>
-    <button type="button"
+  <ul class="flex gap-10 items-center font-medium px-6 m-0">
+    <button (click)="navigateTo('/')" class="hover:text-[#0BB097] border-0 font-bold cursor-pointer">كيف يعمل</button>
+    <!-- <button type="button"
       (click)="toggleDarkMode()"
       class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-yellow-300 focus:outline-none transition"
       [attr.aria-label]="isDarkMode ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع الليلي'">
-    </button>
+    </button> -->
     <button *ngIf="!isLoggedInFn()" type="button"
       (click)="goToLogin()"
-      class="hover:bg-[#0BB097] hover:border-0 font-bold py-3 px-10 rounded-lg whitespace-nowrap border-1">
+      class="hover:bg-[#0BB097] hover:border-0 hover:text-white font-bold py-3 px-8 rounded border-1">
       تسجيل الدخول
     </button>
 

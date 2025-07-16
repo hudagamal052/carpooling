@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Trip } from '../models/trip.model';
 import { CreateTripRequest } from '../models/trip.model';
 import { API_BASE_URL } from '../api';
+import { TripCard } from '../models/trip.model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,26 +39,16 @@ export class TripService {
     );
   }
 
-  getTripsByLocation(from: string, to: string): Observable<Trip[]> {
-    const params = { from, to };
-    return this.http.get<Trip[]>(`${this.apiUrl}/trips/search`, { params }).pipe(
-      map(response => {
-        return response.map(trip => ({
-          from: trip.from,
-          to: trip.to,
-          carType: trip.carType,
-          availableSeats: trip.availableSeats,
-          driver: {
-            name: trip.driver.name,
-            avatar: trip.driver.avatar,
-            rating: trip.driver.rating
-          }
-        }));
-      }),
-      catchError(error => {
-        console.error('Error searching trips:', error);
-        return of(this.getMockTrips());
-      })
+  getTripsByLocation(departureCity: string, destinationCity: string, departureDate?: string): Observable<TripCard[]> {
+    const params: any = {
+      DepartureCity: departureCity,
+      DestinationCity: destinationCity
+    };
+    if (departureDate) {
+      params.DepartureDate = departureDate;
+    }
+    return this.http.get<any>(`${API_BASE_URL}/Trip/GetAllTrips`, { params }).pipe(
+      map(response => response.data.items as TripCard[])
     );
   }
 
@@ -72,6 +63,12 @@ export class TripService {
 
   createTrip(payload: CreateTripRequest): Observable<any> {
     return this.http.post<any>(`${API_BASE_URL}/Trip/CreateTrip`, payload);
+  }
+
+  getAllTrips(): Observable<TripCard[]> {
+    return this.http.get<any>(`${API_BASE_URL}/Trip/GetAllTrips`).pipe(
+      map(response => response.data.items as TripCard[])
+    );
   }
 
   // Mock data for development/testing

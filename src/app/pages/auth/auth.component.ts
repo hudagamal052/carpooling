@@ -33,7 +33,7 @@ export class AuthComponent {
     return this.isRegisterState;
   }
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   toggleState(): void {
     const left = document.querySelector('.content-left') as HTMLElement;
@@ -54,8 +54,6 @@ export class AuthComponent {
     this.loginError = '';
     this.authService.login(this.loginData).subscribe({
       next: (res) => {
-        // مثال: توجيه المستخدم أو حفظ التوكن
-        // this.router.navigate(['/dashboard']);
         this.router.navigate(['/']);
       },
       error: (err) => {
@@ -75,7 +73,10 @@ export class AuthComponent {
     this.authService.register(this.registerData).subscribe({
       next: (res) => {
         this.registerSuccess = 'تم إنشاء الحساب بنجاح!';
-        // يمكنكِ توجيه المستخدم أو إعادة تعيين الفورم
+        this.router.navigate(['/auth']);
+        this.loginData.email = this.registerData.Email;
+        this.loginData.password = this.registerData.Password;
+
       },
       error: (err) => {
         console.error('Registration error:', err);

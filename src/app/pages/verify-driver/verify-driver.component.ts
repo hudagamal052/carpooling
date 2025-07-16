@@ -199,7 +199,7 @@ export class VerifyDriverComponent implements OnInit {
                 next: (uploadRes) => {
                   if (uploadRes.data) {
                     this.showToast('تم إرسال طلب التوثيق والملفات بنجاح!', 'success');
-                    setTimeout(() => this.router.navigate(['/']), 3000);
+            setTimeout(() => this.router.navigate(['/']), 3000);
                   } else {
                     this.showToast(uploadRes.message || 'تم حفظ البيانات لكن فشل رفع الملفات.', 'error');
                   }

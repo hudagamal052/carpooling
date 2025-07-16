@@ -21,4 +21,17 @@ export interface CreateTripRequest {
   seatsAvailable: number;
   price: number;
   notes: string;
+}
+
+export interface TripCard {
+  tripId: string;
+  departureCity: string;
+  destinationCity: string;
+  carType: string;
+  departureTime: string;
+  availableSeats: number;
+  price: number;
+  driverName: string;
+  driverImageUrl: string;
+  rate: number;
 } 
