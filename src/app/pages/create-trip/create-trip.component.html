@@ -102,10 +102,10 @@
                         <label class="form-label">سعر المقعد الواحد (بالجنيه)</label>
                         <input type="number" class="form-control" formControlName="pricePerSeat" placeholder="مثال: 50" min="1">
                       </div>
-                      <div class="col-md-6 mb-4" *ngIf="totalPrice() > 0">
+                      <div class="col-md-6 mb-4" *ngIf="totalPrice > 0">
                         <label class="form-label">ملخص السعر</label>
                         <div class="price-summary alert alert-info">
-                          <p class="mb-0 fw-bold">إجمالي الدخل المتوقع: {{ totalPrice() }} جنيه</p>
+                          <p class="mb-0 fw-bold">إجمالي الدخل المتوقع: {{ totalPrice }} جنيه</p>
                         </div>
                       </div>
                     </div>
@@ -140,7 +140,7 @@
                           <div class="col-md-6"><p><strong>التاريخ:</strong> {{ formatDateTime(tripForm.value.departureDateTime, 'date') }}</p><p><strong>الوقت:</strong> {{ formatDateTime(tripForm.value.departureDateTime, 'time') }}</p></div>
                           <div class="col-md-6"><p><strong>المقاعد:</strong> {{ tripForm.value.availableSeats }}</p><p><strong>سعر المقعد:</strong> {{ tripForm.value.pricePerSeat }} جنيه</p></div>
                         </div>
-                        <div class="total-earnings mt-3"><strong>إجمالي الدخل المتوقع: {{ totalPrice() }} جنيه</strong></div>
+                        <div class="total-earnings mt-3"><strong>إجمالي الدخل المتوقع: {{ totalPrice }} جنيه</strong></div>
                       </div>
                       <div class="review-card" *ngIf="tripForm.value.notes">
                         <h6 class="review-title"><i class="fas fa-sticky-note me-2"></i>ملاحظات إضافية</h6>

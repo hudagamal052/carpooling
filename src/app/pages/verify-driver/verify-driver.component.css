@@ -259,3 +259,30 @@
     font-weight: 500;
     animation: fadeIn 0.3s ease-in-out;
   }
+
+/* Success Popup Styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal-popup {
+  background: #fff;
+  padding: 2rem 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.modal-popup h2 {
+  color: #4a00e0;
+  margin-bottom: 1rem;
+}
+.modal-popup p {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}

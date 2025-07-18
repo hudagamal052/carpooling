@@ -8,6 +8,9 @@ import { CreateTripComponent } from './pages/create-trip/create-trip.component';
 import { AuthComponent } from './pages/auth/auth.component';
 // import { RegisterComponent } from './pages/register/register.component';
 import { LayoutComponent } from './layout/layout.component';
+import { SuggestedTripsComponent } from './pages/suggested-trips/suggested-trips.component';
+import { SuggestTripComponent } from './pages/suggest-trip/suggest-trip.component';
+import { MySuggestedTripsComponent } from './pages/my-suggested-trips/my-suggested-trips.component';
 
 export const routes: Routes = [
     {
@@ -21,6 +24,11 @@ export const routes: Routes = [
       { path: 'create-trip', component: CreateTripComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'verify-driver', loadComponent: () => import('./pages/verify-driver/verify-driver.component').then(m => m.VerifyDriverComponent) },
+      { path: 'suggested-trips', component: SuggestedTripsComponent },
+      { path: 'suggest-trip', component: SuggestTripComponent},
+      { path: 'suggest-trip/:id', component: SuggestTripComponent },
+      { path: 'my-suggested-trips', component: MySuggestedTripsComponent },
+      
     ]
   },
   { path: 'auth', component: AuthComponent },

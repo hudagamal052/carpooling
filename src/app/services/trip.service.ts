@@ -11,7 +11,7 @@ import { TripCard } from '../models/trip.model';
   providedIn: 'root'
 })
 export class TripService {
-  private apiUrl = 'http://localhost:3000/api'; // Update this with your actual API URL
+  private apiUrl = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) { }
 
