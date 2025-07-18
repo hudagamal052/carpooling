@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,16 +18,51 @@ export class NavbarComponent implements OnInit {
   isLoggedIn = false;
   isVerifiedDriver = false;
   public isDropdownOpenState = false;
+  public user: { name: string; email: string; profileImageUrl: string } | null = null;
 
   // اجعل authService public ليكون متاحًا في القالب
-  constructor(public authService: AuthService, private router: Router) {
-    this.authService.getLoggedInObservable().subscribe(val => this.isLoggedIn = val);
-    this.authService.getIsVerifiedDriverObservable().subscribe(val => this.isVerifiedDriver = val);
+  constructor(
+    public authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private profileService: ProfileService
+  ) {
+    this.authService.getLoggedInObservable().subscribe(val => {
+      this.isLoggedIn = val;
+      this.cdr.markForCheck();
+      if (val) {
+        this.checkDriverVerifyStatus();
+      }
+    });
+    this.authService.getIsVerifiedDriverObservable().subscribe(val => {
+      this.isVerifiedDriver = val;
+      this.cdr.markForCheck();
+    });
+    this.authService.getCurrentUserObservable().subscribe(user => {
+      this.user = user;
+      this.cdr.markForCheck();
+    });
   }
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
+    if (this.isLoggedIn) {
+      this.checkDriverVerifyStatus();
+    }
     this.isVerifiedDriver = this.authService.isVerifiedDriver();
+  }
+
+  checkDriverVerifyStatus() {
+    this.authService.getDriverVerifyStatus().subscribe({
+      next: (res) => {
+        this.isVerifiedDriver = !!res.data;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isVerifiedDriver = false;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   // دالة حالة تسجيل الدخول

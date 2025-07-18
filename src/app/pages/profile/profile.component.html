@@ -1,165 +1,186 @@
-
-<div class="page-layout row">
-
-  <aside class="sidebar col-3">
-   
-    <div class="card">
-    
-      <div class="profile-section">
-        <img [src]="profileImage" alt="Profile" class="profile-image">
-        <div class="profile-info">
-          <div class="profile-greeting">{{ profileGreeting }}</div>
-          <div class="profile-name">{{ profileName }}</div>
-        </div>
-      </div>
+<div class="profile-container max-w-3xl mx-auto mt-17">
+  <!-- هيدر ملون مع صورة وظل -->
+  <div class="relative flex flex-col items-center justify-center bg-gradient-to-b from-blue-900 to-blue-800 rounded-t-2xl shadow-lg pb-16">
+    <div class="absolute top-4 right-4">
+      <button *ngIf="!editMode" (click)="isDriver ? openEditDriver() : openEditPassenger()" class="bg-white/80 hover:bg-white text-blue-600 font-bold py-2 px-4 rounded shadow transition">تعديل الملف الشخصي</button>
+      <button *ngIf="editMode" (click)="cancelEdit()" class="bg-red-100 hover:bg-red-200 text-red-600 font-bold py-2 px-4 rounded shadow transition">إلغاء</button>
     </div>
-
-   
-    <div class="card">
-      <div class="menu-item-header">
-        <i class="fas fa-user icon-blue"></i>
-        <div class="menu-item-content">اعدادات الحساب</div>
-      </div>
-      <div class="divider"></div>
-      <div class="submenu">
-        <a (click)="setView('personal')" [class.active-link]="activeView === 'personal'">معلومات الحساب</a>
-        <a (click)="setView('car')" [class.active-link]="activeView === 'car'">معلومات السيارة</a>
-      </div>
+    <div class="relative -mb-16 z-10 mt-4">
+      <img [src]="isDriver ? (user?.profileImageUrl || 'https://i.pravatar.cc/100') : (passengerProfile?.profileImageUrl || user?.profileImageUrl || 'https://i.pravatar.cc/100')"
+        class="w-36 h-36 rounded-full border-4 border-white shadow-xl object-cover ring-4 ring-blue-200" alt="Profile">
+      <label *ngIf="!isDriver && editMode" class="absolute bottom-2 right-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg border-2 border-white transition cursor-pointer" title="تغيير الصورة">
+        <i class="bi bi-camera"></i>
+        <input type="file" accept="image/*" (change)="onPassengerImageChange($event)" class="hidden" />
+      </label>
+      <label *ngIf="isDriver && editMode" class="absolute bottom-2 right-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg border-2 border-white transition cursor-pointer" title="تغيير صورة السائق">
+        <i class="bi bi-camera"></i>
+        <input type="file" accept="image/*" (change)="onDriverImageChange($event)" class="hidden" />
+      </label>
+      <span *ngIf="isDriver" class="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-3 py-1 rounded-full shadow">سائق موثق</span>
+      <span *ngIf="!isDriver" class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-3 py-1 rounded-full shadow">راكب</span>
     </div>
-
-   
-    <div class="card">
-      <div class="menu-item-header">
-        <i class="fas fa-lock icon-blue"></i>
-        <div class="menu-item-content">الخصوصية</div>
-      </div>
+    <div class="mt-20 text-center">
+      <h2 class="text-3xl font-extrabold text-white drop-shadow">{{ isDriver ? user?.name : passengerProfile?.name }}</h2>
+      <p class="text-blue-100 text-lg">{{ isDriver ? user?.email : passengerProfile?.email }}</p>
     </div>
+  </div>
 
-    
-    <div class="card">
-      <div class="menu-item-header">
-        <i class="fas fa-question-circle icon-blue"></i>
-        <div class="menu-item-content">مركز المساعدة</div>
+  <div class="-mt-10 space-y-8">
+    <!-- وضع التعديل -->
+    <form *ngIf="editMode" (ngSubmit)="isDriver ? saveDriverProfile() : savePassengerProfile()" class="card p-6 rounded-2xl bg-white/90 shadow-xl border border-blue-100 space-y-6">
+      <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+        <i class="bi bi-pencil-square text-blue-500 bg-blue-100 p-2 rounded-full"></i> تعديل البيانات
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div *ngIf="!isDriver">
+          <label class="block mb-1 font-semibold">الاسم</label>
+          <input type="text" [(ngModel)]="editPassengerData.Name" name="passengerName" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required />
+        </div>
+        <div *ngIf="isDriver">
+          <label class="block mb-1 font-semibold">اسم السائق</label>
+          <input type="text" [(ngModel)]="editDriverData.driverName" name="driverName" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required />
+        </div>
+        <!-- رقم الهاتف للراكب -->
+        <div *ngIf="!isDriver">
+          <label class="block mb-1 font-semibold">رقم الهاتف</label>
+          <input type="text" [(ngModel)]="editPassengerData.PhoneNumber" name="passengerPhoneNumber" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required />
+        </div>
+        <!-- رقم الهاتف للسائق -->
+        <div *ngIf="isDriver">
+          <label class="block mb-1 font-semibold">رقم الهاتف</label>
+          <input type="text" [(ngModel)]="editDriverData.phoneNumber" name="driverPhoneNumber" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required />
+        </div>
+        <div *ngIf="isDriver">
+          <label class="block mb-1 font-semibold">الوصف</label>
+          <textarea [(ngModel)]="editDriverData.description" name="description" rows="2" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"></textarea>
+        </div>
       </div>
+      <div class="flex gap-4 mt-4">
+        <button type="submit" [disabled]="isSaving" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded-full shadow transition flex-1 flex items-center justify-center gap-2">
+          <span *ngIf="!isSaving">حفظ</span>
+          <span *ngIf="isSaving" class="flex items-center gap-2"><i class="bi bi-arrow-repeat animate-spin"></i> جارٍ الحفظ...</span>
+        </button>
+        <button type="button" (click)="cancelEdit()" [disabled]="isSaving" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-8 rounded-full shadow transition flex-1">إلغاء</button>
+      </div>
+    </form>
+
+    <!-- عرض البيانات العادي -->
+    <div *ngIf="!editMode">
+      <div *ngIf="isDriver; else passengerProfileBlock">
+      <!-- بيانات السائق -->
+        <div class="card p-6 rounded-2xl bg-white/90 shadow-xl border border-blue-100">
+          <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+            <i class="bi bi-person-badge text-blue-500 bg-blue-100 p-2 rounded-full"></i> بيانات السائق
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div><span class="font-semibold">الاسم:</span> {{ driverProfile?.name || 'لا يوجد' }}</div>
+            <div><span class="font-semibold">الإيميل:</span> {{ driverProfile?.email || 'لا يوجد' }}</div>
+            <div><span class="font-semibold">رقم الهاتف:</span> {{ driverProfile?.phoneNumber || 'لا يوجد' }}</div>
+            <div><span class="font-semibold">عدد الرحلات:</span> {{ driverProfile?.tripsNumber != null ? driverProfile?.tripsNumber : 'لا يوجد' }}</div>
+            <div class="flex items-center gap-2">
+              <span class="font-semibold">التقييم:</span>
+              <ng-container *ngIf="driverProfile?.driverRating as rating">
+                <ng-container *ngFor="let star of [1,2,3,4,5]">
+                  <i class="bi" [ngClass]="star <= rating ? 'bi-star-fill text-yellow-400' : 'bi-star text-gray-300'"></i>
+                </ng-container>
+                <span class="text-xs text-gray-500">({{ driverProfile?.driverRateCount }} تقييم)</span>
+              </ng-container>
+            </div>
+            <div><span class="font-semibold">الحالة:</span> <span [ngClass]="driverProfile?.isActive ? 'text-green-600' : 'text-red-600'">{{ driverProfile?.isActive != null ? (driverProfile?.isActive ? 'نشط' : 'غير نشط') : 'لا يوجد' }}</span></div>
+            <div class="md:col-span-2"><span class="font-semibold">الوصف:</span> {{ driverProfile?.description || 'لا يوجد' }}</div>
+          </div>
+        </div>
+
+        <div class="card p-6 rounded-2xl bg-white/90 shadow-xl border border-blue-100">
+          <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+            <i class="bi bi-car-front-fill text-blue-500 bg-blue-100 p-2 rounded-full"></i> رحلاتي كسائق
+          </h3>
+          <ul *ngIf="driverTrips && driverTrips.length; else noTrips" class="divide-y divide-gray-200">
+            <li *ngFor="let trip of driverTrips" class="p-4 flex flex-col gap-4">
+              <div class="flex items-center gap-4">
+                <div>
+                <i class="bi bi-geo-alt text-blue-400"></i>
+                <span class="font-semibold">من</span> {{ trip.departureAddress }}
+              </div>
+              <div>
+                <i class="bi bi-arrow-left-right mx-2 text-gray-400"></i>
+                <span class="font-semibold">إلى</span> {{ trip.destinationAddress }}
+              </div>
+              </div>
+              <div class="flex items-center gap-4 text-sm text-gray-500">
+                <div>
+                <i class="bi bi-calendar-event"></i> {{ trip.departureTime | date:'yyyy-MM-dd HH:mm' }}
+              </div>
+              <div>
+                <i class="bi bi-cash-coin"></i> {{ trip.price }} جنيه
+              </div>
+            </div>
+            </li>
+    </ul>
+          <ng-template #noTrips><div class="text-gray-400 text-center py-4">لا توجد رحلات.</div></ng-template>
+        </div>
+
+        <div class="card p-6 rounded-2xl bg-white/90 shadow-xl border border-blue-100">
+          <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+            <i class="bi bi-file-earmark-text text-blue-500 bg-blue-100 p-2 rounded-full"></i> مستندات التوثيق
+          </h3>
+          <ul *ngIf="driverDocuments && driverDocuments.length; else noDocs" class="divide-y divide-gray-200">
+            <li *ngFor="let doc of driverDocuments" class="py-4">
+              <div class="flex items-center gap-2 mb-1">
+                <i class="bi bi-file-earmark-check text-green-500" *ngIf="doc.status === 1"></i>
+                <i class="bi bi-file-earmark-x text-red-500" *ngIf="doc.status !== 1"></i>
+                <span class="font-semibold">نوع المستند:</span> {{ doc.documentType }}
+              </div>
+              <div class="text-sm text-gray-600 mb-1"><span class="font-semibold">الحالة:</span> {{ doc.status === 1 ? 'موثق' : 'قيد المراجعة' }}</div>
+              <div class="text-sm text-gray-600 mb-1"><span class="font-semibold">تاريخ التوثيق:</span> {{ doc.verifiedAt | date:'yyyy-MM-dd' }}</div>
+              <div *ngIf="doc.documentURL && doc.documentURL.length" class="mb-1">
+                <span class="font-semibold">روابط المستند:</span>
+                <a *ngFor="let url of doc.documentURL" [href]="url" target="_blank" class="text-blue-600 underline mx-1">رابط</a>
+              </div>
+              <div *ngIf="doc.comment" class="text-xs text-gray-500">ملاحظة: {{ doc.comment }}</div>
+            </li>
+    </ul>
+          <ng-template #noDocs><div class="text-gray-400 text-center py-4">لا توجد مستندات توثيق.</div></ng-template>
+        </div>
+      </div>
+
+      <ng-template #passengerProfileBlock>
+        <div class="card p-6 rounded-2xl bg-white/90 shadow-xl border border-blue-100">
+          <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+            <i class="bi bi-person text-blue-500 bg-blue-100 p-2 rounded-full"></i> بيانات الراكب
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div><span class="font-semibold">الاسم:</span> {{ passengerProfile?.name || 'لا يوجد' }}</div>
+            <div><span class="font-semibold">الإيميل:</span> {{ passengerProfile?.email || 'لا يوجد' }}</div>
+            <div><span class="font-semibold">رقم الهاتف:</span> {{ passengerProfile?.phoneNumber || 'لا يوجد' }}</div>
+            <div><span class="font-semibold">عدد الرحلات:</span> {{ passengerProfile?.totalTrips != null ? passengerProfile?.totalTrips : 'لا يوجد' }}</div>
+            <div class="flex items-center gap-2">
+              <span class="font-semibold">التقييم:</span>
+              <ng-container *ngIf="passengerProfile?.passengerRating as rating">
+                <ng-container *ngFor="let star of [1,2,3,4,5]">
+                  <i class="bi" [ngClass]="star <= rating ? 'bi-star-fill text-yellow-400' : 'bi-star text-gray-300'"></i>
+                </ng-container>
+                <span class="text-xs text-gray-500">({{ passengerProfile?.ratingCount }} تقييم)</span>
+              </ng-container>
+            </div>
+            <div><span class="font-semibold">الحالة:</span> <span [ngClass]="passengerProfile?.isActive ? 'text-green-600' : 'text-red-600'">{{ passengerProfile?.isActive != null ? (passengerProfile?.isActive ? 'نشط' : 'غير نشط') : 'لا يوجد' }}</span></div>
+          </div>
+          <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+            <i class="bi bi-person text-blue-500 bg-blue-100 p-2 rounded-full"></i> رحلاتي كراكب
+          </h3>
+          <ul class="divide-y divide-gray-200">
+            <li *ngFor="let trip of passengerTrips" class="py-4 flex flex-col md:flex-row md:items-center md:justify-between">
+              <div class="flex items-center gap-2">
+                <i class="bi bi-geo-alt text-blue-400"></i>
+                <span class="font-semibold">إلى</span> {{ trip.destination }}
+              </div>
+              <div class="text-sm text-gray-500 mt-1 md:mt-0">
+                <i class="bi bi-calendar-event"></i> {{ trip.date }}
+              </div>
+            </li>
+    </ul>
+        </div>
+      </ng-template>
     </div>
-
-
-    <div class="card">
-      <div class="menu-item-header">
-        <i class="fas fa-user-friends icon-blue"></i>
-        <div class="menu-item-content">تواصل معنا</div>
-      </div>
-    </div>
-
-   
-    <div class="card">
-      <div class="menu-item-header">
-        <i class="fas fa-sign-out-alt icon-blue icon-flipped"></i>
-        <div class="menu-item-content">تسجيل الخروج</div>
-      </div>
-    </div>
-  </aside>
-
-
-    <main class="content-container card col-8">
-   
-    <div *ngIf="activeView === 'personal'" class="info-layout">
-      
-      <div class="form-container">
-        <h2 class="form-title">المعلومات الشخصية</h2>
-        <div class="form-row">
-          <label class="form-label">الاسم</label>
-          <div class="input-wrapper">
-            <input matInput [(ngModel)]="personal.name" class="form-input">
-            <i class="fas fa-pencil-alt edit-icon"></i>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">الجنس</label>
-          <div class="input-wrapper">
-            <mat-radio-group [(ngModel)]="personal.gender" class="radio-group-ltr">
-              <mat-radio-button value="male">ذكر</mat-radio-button>
-              <mat-radio-button value="female">أنثى</mat-radio-button>
-            </mat-radio-group>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">البريد</label>
-          <div class="input-wrapper">
-            <input matInput [(ngModel)]="personal.email" type="email" class="form-input">
-            <i class="fas fa-pencil-alt edit-icon"></i>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">رقم الهاتف</label>
-          <div class="input-wrapper">
-            <span class="phone-prefix-rtl"><img src="https://hatscripts.github.io/circle-flags/flags/eg.svg" width="24"></span>
-            <input matInput [(ngModel)]="personal.phone" class="form-input phone-input-rtl">
-            <i class="fas fa-pencil-alt edit-icon"></i>
-          </div>
-        </div>
-      </div>
-     
-      <div class="illustration-container">
-        <img src="../../assets/images/pass.png" alt="Illustration" class="illustration-image">
-        <button class="save-button">حفظ التعديلات</button>
-      </div>
-    </div>
-
-   
-    <div *ngIf="activeView === 'car'" class="info-layout">
-      <div class="form-container">
-        <h2 class="form-title">معلومات السيارة</h2>
-        <div class="form-row">
-          <label class="form-label">النوع</label>
-          <div class="input-wrapper">
-            <input matInput [(ngModel)]="car.type" class="form-input">
-            <i class="fas fa-pencil-alt edit-icon"></i>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">رقم اللوحة</label>
-          <div class="input-wrapper">
-            <input matInput [(ngModel)]="car.plateNumber" class="form-input">
-            <i class="fas fa-pencil-alt edit-icon"></i>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">عدد مقاعد السيارة</label>
-          <div class="input-wrapper">
-            <input matInput [(ngModel)]="car.seats" type="number" class="form-input">
-            <i class="fas fa-pencil-alt edit-icon"></i>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">تصنيف السيارة</label>
-          <div class="input-wrapper">
-            <input matInput [(ngModel)]="car.category" class="form-input">
-            <i class="fas fa-pencil-alt edit-icon"></i>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">لون السيارة</label>
-          <div class="input-wrapper">
-            <input matInput [(ngModel)]="car.color" class="form-input">
-            <span class="color-preview-ltr"></span>
-            <i class="fas fa-pencil-alt edit-icon"></i>
-          </div>
-        </div>
-      </div>
-   
-      
-      <div class="gallery-container">
-        <div class="main-image-wrapper">
-          <img [src]="car.mainImage" alt="Main car" class="main-image">
-        </div>
-        <div class="thumbnails-wrapper">
-          <img *ngFor="let thumb of car.thumbnails" [src]="thumb" class="thumbnail">
-          <div class="thumbnail add-image-button"><i class="fas fa-plus"></i></div>
-        </div>
-        <button class="save-button">حفظ التعديلات</button>
-      </div>
-    </div>
-  </main>
-
+  </div>
 </div>

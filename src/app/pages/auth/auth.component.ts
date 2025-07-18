@@ -73,7 +73,7 @@ export class AuthComponent {
     this.authService.register(this.registerData).subscribe({
       next: (res) => {
         this.registerSuccess = 'تم إنشاء الحساب بنجاح!';
-        this.router.navigate(['/auth']);
+        this.isRegisterState = false; // أظهر نموذج تسجيل الدخول
         this.loginData.email = this.registerData.Email;
         this.loginData.password = this.registerData.Password;
 

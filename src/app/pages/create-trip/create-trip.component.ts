@@ -131,9 +131,9 @@ export class CreateTripComponent implements OnInit {
 
   // --- 8. دالة الإرسال النهائية ---
   onSubmit(): void {
-    if (!this.tripForm.valid) {
+    if (!this.tripForm.valid)
       return;
-    }
+    
 
     this.isSubmitting.set(true);
     const formValue = this.tripForm.value;
@@ -157,7 +157,7 @@ export class CreateTripComponent implements OnInit {
       .subscribe({
         next: () => {
           this.isSuccess.set(true);
-          setTimeout(() => this.router.navigate(['/my-rides']), 3000);
+          setTimeout(() => this.router.navigate(['/passenger-dashboard']), 3000);
         },
         error: (err: any) => {
           console.error('Failed to create trip:', err);

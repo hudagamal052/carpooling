@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
 import { TripCard } from '../../models/trip.model';
 import { TripService } from '../../services/trip.service';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 export interface Location {
   lat: number;
@@ -36,8 +39,19 @@ export interface Ride {
 export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   passengerCount = 1;
   rides: TripCard[] = [];
+  pageNumber = 1;
+  pageSize = 10;
+  totalPages = 1;
+  totalCount = 0;
 
-  constructor(private tripService: TripService) {}
+  carTypes: string[] = ['سيدان', 'هاتشباك', 'SUV', 'بيك أب', 'ميني فان'];
+  filterCarType: string = '';
+  filterSeats: number | null = null;
+  filterPrice: number | null = null;
+  filterRate: number | null = null;
+  filteredRides: TripCard[] = [];
+
+  constructor(private tripService: TripService, private router: Router) {}
 
   increasePassengers() {
     this.passengerCount++;
@@ -67,6 +81,12 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
   // Default to Cairo, Egypt
   private defaultCenter: L.LatLngExpression = [30.0444, 31.2357];
 
+  private updatingFromInput = false;
+  private updatingToInput = false;
+
+  private fromInputSubject = new Subject<string>();
+  private toInputSubject = new Subject<string>();
+
   ngOnInit(): void {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
@@ -74,9 +94,57 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
       iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
       shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
     });
-    this.tripService.getAllTrips().subscribe((trips: TripCard[]) => {
-      this.rides = trips;
+    this.loadTrips();
+    this.fromInputSubject.pipe(debounceTime(1000)).subscribe(value => {
+      if (value.trim()) {
+        this.setLocationByAddress('from', value);
+      }
     });
+    this.toInputSubject.pipe(debounceTime(1000)).subscribe(value => {
+      if (value.trim()) {
+        this.setLocationByAddress('to', value);
+      }
+    });
+  }
+
+  loadTrips(): void {
+    if (this.fromLocationText.trim() && this.toLocationText.trim()) {
+      this.tripService.getTripsByLocation(this.fromLocationText, this.toLocationText, undefined, this.pageNumber, this.pageSize)
+        .subscribe((response: any) => {
+          this.rides = response.data.items;
+          this.filteredRides = [...this.rides];
+          this.totalPages = response.data.totalPages;
+          this.totalCount = response.data.totalCount;
+        });
+    } else {
+      this.tripService.getAllTrips(this.pageNumber, this.pageSize).subscribe((response: any) => {
+        this.rides = response.data.items;
+        this.filteredRides = [...this.rides];
+        this.totalPages = response.data.totalPages;
+        this.totalCount = response.data.totalCount;
+      });
+    }
+  }
+
+  nextPage(): void {
+    if (this.pageNumber < this.totalPages) {
+      this.pageNumber++;
+      this.loadTrips();
+    }
+  }
+
+  prevPage(): void {
+    if (this.pageNumber > 1) {
+      this.pageNumber--;
+      this.loadTrips();
+    }
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.pageNumber = page;
+      this.loadTrips();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -137,7 +205,9 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
       .bindPopup("موقع الانطلاق");
 
     // Get address and set to input
+    this.updatingFromInput = true;
     this.fromLocationText = await this.reverseGeocode(location);
+    this.updatingFromInput = false;
   }
 
   private async setDropoffLocation(location: Location): Promise<void> {
@@ -161,7 +231,9 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
       .bindPopup("موقع الوصول");
 
     // Get address and set to input
+    this.updatingToInput = true;
     this.toLocationText = await this.reverseGeocode(location);
+    this.updatingToInput = false;
   }
 
   private async onMapClick(latlng: L.LatLng): Promise<void> {
@@ -301,13 +373,13 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
       const value = target.value;
       if (type === 'from') {
         this.fromLocationText = value;
-        if (value.trim()) {
-          this.setLocationByAddress('from', value);
+        if (!this.updatingFromInput) {
+          this.fromInputSubject.next(value);
         }
       } else if (type === 'to') {
         this.toLocationText = value;
-        if (value.trim()) {
-          this.setLocationByAddress('to', value);
+        if (!this.updatingToInput) {
+          this.toInputSubject.next(value);
         }
       }
     }
@@ -315,17 +387,29 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
 
   // Method to search for rides based on locations
   searchRides(): void {
-    if (this.fromLocationText.trim() && this.toLocationText.trim()) {
-      // يمكنك إضافة فلترة التاريخ إذا كان لديك متغير للتاريخ
-      this.tripService.getTripsByLocation(this.fromLocationText, this.toLocationText)
-        .subscribe((trips: TripCard[]) => {
-          this.rides = trips;
-        });
-    } else {
-      // If no specific locations, get all trips
-      this.tripService.getAllTrips().subscribe((trips: TripCard[]) => {
-        this.rides = trips;
-      });
-    }
+    this.pageNumber = 1;
+    this.loadTrips();
+  }
+
+  navigateToTripDetails(tripId: string): void {
+    this.router.navigate(['/trip-details', tripId]);
+  }
+
+  applyFilters() {
+    this.filteredRides = this.rides.filter(ride => {
+      const carTypeMatch = !this.filterCarType || ride.carType === this.filterCarType;
+      const seatsMatch = !this.filterSeats || ride.availableSeats >= this.filterSeats;
+      const priceMatch = !this.filterPrice || ride.price <= this.filterPrice;
+      const rateMatch = !this.filterRate || ride.rate >= this.filterRate;
+      return carTypeMatch && seatsMatch && priceMatch && rateMatch;
+    });
+  }
+
+  resetFilters() {
+    this.filterCarType = '';
+    this.filterSeats = null;
+    this.filterPrice = null;
+    this.filterRate = null;
+    this.filteredRides = [...this.rides];
   }
 }
