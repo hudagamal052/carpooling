@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { NgClass, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,7 +9,6 @@ import { TripCard } from '../../models/trip.model';
 import { TripService } from '../../services/trip.service';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { SuggestTripComponent } from '../suggest-trip/suggest-trip.component';
 
@@ -41,26 +40,25 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
   filterRate: number | null = null;
   filteredRides: TripCard[] = [];
 
-  constructor(private tripService: TripService, private router: Router) {}
+  constructor(private tripService: TripService, private router: Router, private authService: AuthService) {}
 
-  increasePassengers() {
-    this.passengerCount++;
-  }
-
-  decreasePassengers() {
-    if (this.passengerCount > 1) {
-      this.passengerCount--;
-    }
-  }
   @Output() locationChange = new EventEmitter<{
     pickup: Location | null;
     dropoff: Location | null;
   }>();
+
   isSuggestTripModalVisible = false;
 
   private map!: L.Map;
   private pickupMarker?: L.Marker;
   private dropoffMarker?: L.Marker;
+  pickupLocation: Location | null = null;
+  dropoffLocation: Location | null = null;
+  isSelectingPickup = true;
+  searchQuery = "";
+  fromLocationText = ""; // To store the "From" input value
+  toLocationText = "";   // To store the "To" input value
+
   private defaultCenter: L.LatLngExpression = [30.0444, 31.2357];
 
   private updatingFromInput = false;
@@ -156,15 +154,6 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
   closeSuggestTripModal(): void {
     this.isSuggestTripModalVisible = false;
   }
-
-
-  increasePassengers(): void { this.passengerCount++; }
-  decreasePassengers(): void { if (this.passengerCount > 1) { this.passengerCount--; } }
-  searchRides(): void {
-    console.log(`Searching for rides from "${this.fromLocationText}" to "${this.toLocationText}"`);
-    this.tripService.getTripsByLocation(this.fromLocationText, this.toLocationText)
-      .subscribe((trips: TripCard[]) => { this.rides = trips; });
-  }
   private initMap(): void {
     this.map = L.map("map").setView(this.defaultCenter, 13);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -248,18 +237,6 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
     }
   }
   setSelectionMode(isPickup: boolean): void { this.isSelectingPickup = isPickup; }
-  private async setPickupLocation(location: Location): Promise<void> {
-    if (this.pickupMarker) { this.map.removeLayer(this.pickupMarker); }
-    const greenIcon = new L.Icon({ iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png", shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png", iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41], } );
-    this.pickupMarker = L.marker([location.lat, location.lng], { icon: greenIcon }).addTo(this.map);
-    this.fromLocationText = await this.reverseGeocode(location);
-  }
-  private async setDropoffLocation(location: Location): Promise<void> {
-    if (this.dropoffMarker) { this.map.removeLayer(this.dropoffMarker); }
-    const redIcon = new L.Icon({ iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png", shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png", iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41], } );
-    this.dropoffMarker = L.marker([location.lat, location.lng], { icon: redIcon }).addTo(this.map);
-    this.toLocationText = await this.reverseGeocode(location);
-  }
   getCurrentLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -282,16 +259,40 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
     this.pickupMarker = undefined;
     this.dropoffMarker = undefined;
   }
-  private async reverseGeocode(location: Location): Promise<string> {
-    try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.lat}&lon=${location.lng}&accept-language=ar` );
-      const data = await response.json();
-      return data.display_name || `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}`;
-    } catch (error) {
-      console.error('Reverse geocoding error:', error);
-      return `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}`;
-    }
+  private emitLocationChange(): void {
+    this.locationChange.emit({
+      pickup: this.pickupLocation,
+      dropoff: this.dropoffLocation,
+    });
   }
+
+    // Set marker and location by address (from input field)
+    async setLocationByAddress(type: 'from' | 'to', address: string): Promise<void> {
+      if (!address.trim()) return;
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&accept-language=ar`
+        );
+        const data = await response.json();
+        if (data && data.length > 0) {
+          const { lat, lon } = data[0];
+          const location: Location = { lat: parseFloat(lat), lng: parseFloat(lon) };
+          if (type === 'from') {
+            await this.setPickupLocation(location);
+            this.isSelectingPickup = false;
+            this.map.setView([location.lat, location.lng], 15);
+          } else {
+            await this.setDropoffLocation(location);
+            this.map.setView([location.lat, location.lng], 15);
+          }
+          this.emitLocationChange();
+        }
+      } catch (error) {
+        console.error('خطأ في البحث عن العنوان:', error);
+      }
+    }
+  
+  
   // Updated method with proper typing and null check
   onInputChange(type: string, event: Event): void {
     const target = event.target as HTMLInputElement;
