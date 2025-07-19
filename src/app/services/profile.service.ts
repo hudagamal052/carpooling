@@ -50,4 +50,8 @@ export class ProfileService {
     }
     return this.http.put(`${API_BASE_URL}/Driver/EditDriverProfile`, formData);
   }
+
+  getDriverVehicleDetails(): Observable<any> {
+    return this.http.get(`${API_BASE_URL}/Driver/GetDriverVehicleDetails`);
+  }
 }

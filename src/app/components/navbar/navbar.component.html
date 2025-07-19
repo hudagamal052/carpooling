@@ -28,7 +28,7 @@
       <!-- القائمة المنسدلة للملف الشخصي -->
       <div class="relative">
         <button (click)="toggleDropdown()" class="flex items-center gap-2 focus:outline-none p-1 rounded-full">
-          <img [src]="user?.profileImageUrl || 'https://i.pravatar.cc/40'" alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-primary-color transition-all">
+          <img [src]="profileImageUrl" alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-primary-color transition-all">
           <span class="hidden sm:block font-semibold text-gray-800">{{ user?.name }}</span>
           <!-- شارة التوثيق -->
           <i *ngIf="isVerifiedDriverFn()" class="bi bi-patch-check-fill text-green-500 text-lg" title="حساب موثق"></i>

@@ -6,7 +6,7 @@
       <button *ngIf="editMode" (click)="cancelEdit()" class="bg-red-100 hover:bg-red-200 text-red-600 font-bold py-2 px-4 rounded shadow transition">إلغاء</button>
     </div>
     <div class="relative -mb-16 z-10 mt-4">
-      <img [src]="isDriver ? (user?.profileImageUrl || 'https://i.pravatar.cc/100') : (passengerProfile?.profileImageUrl || user?.profileImageUrl || 'https://i.pravatar.cc/100')"
+      <img [src]="isDriver ? (driverProfile?.driverImageUrl || 'https://i.pravatar.cc/100') : (passengerProfile?.profileImageUrl || 'https://i.pravatar.cc/100')"
         class="w-36 h-36 rounded-full border-4 border-white shadow-xl object-cover ring-4 ring-blue-200" alt="Profile">
       <label *ngIf="!isDriver && editMode" class="absolute bottom-2 right-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg border-2 border-white transition cursor-pointer" title="تغيير الصورة">
         <i class="bi bi-camera"></i>
@@ -83,7 +83,7 @@
                 <ng-container *ngFor="let star of [1,2,3,4,5]">
                   <i class="bi" [ngClass]="star <= rating ? 'bi-star-fill text-yellow-400' : 'bi-star text-gray-300'"></i>
                 </ng-container>
-                <span class="text-xs text-gray-500">({{ driverProfile?.driverRateCount }} تقييم)</span>
+                <span class="text-xs text-gray-500">({{ driverProfile?.driverRateCount || 'لا يوجد'}} تقييم)</span>
               </ng-container>
             </div>
             <div><span class="font-semibold">الحالة:</span> <span [ngClass]="driverProfile?.isActive ? 'text-green-600' : 'text-red-600'">{{ driverProfile?.isActive != null ? (driverProfile?.isActive ? 'نشط' : 'غير نشط') : 'لا يوجد' }}</span></div>
@@ -141,6 +141,21 @@
             </li>
     </ul>
           <ng-template #noDocs><div class="text-gray-400 text-center py-4">لا توجد مستندات توثيق.</div></ng-template>
+        </div>
+        <div class="card p-6 rounded-2xl bg-white/90 shadow-xl border border-blue-100" *ngIf="driverVehicle">
+          <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+            <i class="bi bi-car-front-fill text-blue-500 bg-blue-100 p-2 rounded-full"></i> بيانات السيارة
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div><span class="font-semibold">الموديل:</span> {{ driverVehicle.model || 'لا يوجد' }}</div>
+            <div><span class="font-semibold">اللون:</span> {{ driverVehicle.color || 'لا يوجد' }}</div>
+            <div><span class="font-semibold">رقم اللوحة:</span> {{ driverVehicle.plateNumber || 'لا يوجد' }}</div>
+            <div><span class="font-semibold">عدد المقاعد:</span> {{ driverVehicle.seatsNumber || 'لا يوجد' }}</div>
+            <div class="md:col-span-2"><span class="font-semibold">الوصف:</span> {{ driverVehicle.description || 'لا يوجد' }}</div>
+            <div class="md:col-span-2 flex gap-2 mt-2" *ngIf="driverVehicle.imageURLs && driverVehicle.imageURLs.length">
+              <img *ngFor="let img of driverVehicle.imageURLs" [src]="img" class="w-20 h-20 rounded shadow border" alt="صورة السيارة">
+            </div>
+          </div>
         </div>
       </div>
 

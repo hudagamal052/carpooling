@@ -19,6 +19,7 @@ export class NavbarComponent implements OnInit {
   isVerifiedDriver = false;
   public isDropdownOpenState = false;
   public user: { name: string; email: string; profileImageUrl: string } | null = null;
+  public profileImageUrl: string = 'https://i.pravatar.cc/40';
 
   // اجعل authService public ليكون متاحًا في القالب
   constructor(
@@ -30,8 +31,19 @@ export class NavbarComponent implements OnInit {
     this.authService.getLoggedInObservable().subscribe(val => {
       this.isLoggedIn = val;
       this.cdr.markForCheck();
-      if (val) {
+      if (val && this.authService.isVerifiedDriver()) {
         this.checkDriverVerifyStatus();
+        // جلب صورة السائق
+        this.profileService.getDriverProfile().subscribe(res => {
+          this.profileImageUrl = res.data?.driverImageUrl || 'https://i.pravatar.cc/40';
+          this.cdr.markForCheck();
+        });
+      } else if (val) {
+        // جلب صورة الراكب
+        this.profileService.getPassengerProfile().subscribe(res => {
+          this.profileImageUrl = res.data?.profileImageUrl || 'https://i.pravatar.cc/40';
+          this.cdr.markForCheck();
+        });
       }
     });
     this.authService.getIsVerifiedDriverObservable().subscribe(val => {
@@ -46,7 +58,7 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
-    if (this.isLoggedIn) {
+    if (this.isLoggedIn && this.authService.isVerifiedDriver()) {
       this.checkDriverVerifyStatus();
     }
     this.isVerifiedDriver = this.authService.isVerifiedDriver();

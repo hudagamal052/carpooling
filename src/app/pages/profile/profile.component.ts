@@ -17,6 +17,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   driverProfile: any = null;
   driverTrips: any[] = [];
   driverDocuments: any[] = [];
+  driverVehicle: any = null;
   passengerProfile: any = null;
   passengerTrips = [
     { destination: 'أسيوط', date: '2024-06-05' },
@@ -45,6 +46,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.fetchDriverProfile();
           this.fetchDriverTrips();
           this.fetchDriverDocuments();
+          this.fetchDriverVehicle();
         } else {
           this.fetchPassengerProfile();
         }
@@ -144,6 +146,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   fetchDriverDocuments() {
     this.profileService.getDriverVerificationDocuments().subscribe(res => {
       this.driverDocuments = res.data;
+    });
+  }
+
+  fetchDriverVehicle() {
+    this.profileService.getDriverVehicleDetails().subscribe(res => {
+      this.driverVehicle = res.data;
     });
   }
 
