@@ -67,6 +67,8 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
   private fromInputSubject = new Subject<string>();
   private toInputSubject = new Subject<string>();
 
+  private API_BASE_URL = 'http://me4war.runasp.net';
+
   ngOnInit(): void {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
@@ -322,6 +324,10 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
     this.router.navigate(['/trip-details', tripId]);
   }
 
+  navigateToSuggestTrip() {
+    this.router.navigate(['/suggest-trip']);
+  }
+
   applyFilters() {
     this.filteredRides = this.rides.filter(ride => {
       const carTypeMatch = !this.filterCarType || ride.carType === this.filterCarType;
@@ -338,5 +344,10 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
     this.filterPrice = null;
     this.filterRate = null;
     this.filteredRides = [...this.rides];
+  }
+
+  getFullImageUrl(url: string): string {
+    if (!url) return 'https://i.pravatar.cc/100';
+    return url.startsWith('http') ? url : this.API_BASE_URL + url;
   }
 }

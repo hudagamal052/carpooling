@@ -54,4 +54,21 @@ export class ProfileService {
   getDriverVehicleDetails(): Observable<any> {
     return this.http.get(`${API_BASE_URL}/Driver/GetDriverVehicleDetails`);
   }
+
+  updateDriverVehicleDetails(data: any): Observable<any> {
+    const formData = new FormData();
+    formData.append('Id', data.Id);
+    formData.append('DriverId', data.DriverId);
+    formData.append('Model', data.Model);
+    formData.append('Color', data.Color);
+    formData.append('PlateNumber', data.PlateNumber);
+    formData.append('SeatsNumber', data.SeatsNumber);
+    formData.append('Description', data.Description);
+    if (data.VehicleImageUrls && data.VehicleImageUrls.length) {
+      for (let file of data.VehicleImageUrls) {
+        formData.append('VehicleImageUrls', file);
+      }
+    }
+    return this.http.put(`${API_BASE_URL}/Driver/UpdateVehicleDetails`, formData);
+  }
 }

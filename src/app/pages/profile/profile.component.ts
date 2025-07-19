@@ -31,6 +31,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   editDriverData = { driverName: '', phoneNumber: '', description: '', profileImage: undefined as File | undefined };
   isSaving = false;
 
+  editVehicleMode = false;
+  editVehicleData: any = {
+    Id: '',
+    DriverId: '',
+    Model: '',
+    Color: '',
+    PlateNumber: '',
+    SeatsNumber: 1,
+    Description: '',
+    VehicleImageUrls: [] as File[],
+    previews: [] as string[]
+  };
+
   constructor(private authService: AuthService, private profileService: ProfileService) {}
 
   ngOnInit(): void {
@@ -127,6 +140,44 @@ export class ProfileComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isSaving = false;
+      }
+    });
+  }
+
+  openEditVehicle() {
+    if (!this.driverVehicle) return;
+    this.editVehicleMode = true;
+    this.editVehicleData = {
+      Id: this.driverVehicle.id,
+      DriverId: this.driverVehicle.driverId || '',
+      Model: this.driverVehicle.model || '',
+      Color: this.driverVehicle.color || '',
+      PlateNumber: this.driverVehicle.plateNumber || '',
+      SeatsNumber: this.driverVehicle.seatsNumber || 1,
+      Description: this.driverVehicle.description || '',
+      VehicleImageUrls: [],
+      previews: this.driverVehicle.imageURLs ? [...this.driverVehicle.imageURLs] : []
+    };
+  }
+
+  closeEditVehicle() {
+    this.editVehicleMode = false;
+  }
+
+  onVehicleImagesChange(event: any) {
+    const files = Array.from(event.target.files) as File[];
+    this.editVehicleData.VehicleImageUrls = files;
+    this.editVehicleData.previews = files.map(file => URL.createObjectURL(file));
+  }
+
+  saveVehicleDetails() {
+    this.profileService.updateDriverVehicleDetails(this.editVehicleData).subscribe({
+      next: () => {
+        this.editVehicleMode = false;
+        this.fetchDriverVehicle();
+      },
+      error: () => {
+        // يمكن إضافة رسالة خطأ هنا
       }
     });
   }

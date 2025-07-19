@@ -89,7 +89,7 @@
           </div>
           <div *ngIf="trip?.passengers && trip.passengers.length; else noPassengers">
             <div class="flex items-center gap-3 mb-2" *ngFor="let p of trip.passengers">
-              <div class="w-10 h-10 bg-gray-200 rounded-full overflow-hidden">
+            <div class="w-10 h-10 bg-gray-200 rounded-full overflow-hidden">
                 <img [src]="p.imageUrl" alt="Passenger" class="w-full h-full object-cover" />
               </div>
               <span class="font-medium">{{ p.name }}</span>
