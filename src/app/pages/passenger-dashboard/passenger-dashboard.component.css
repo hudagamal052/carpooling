@@ -24,7 +24,6 @@ button {
 
 /* Style for the button on hover */
 .suggest-trip-button:hover {
-  background-color: #56befa; /* A darker orange (bg-orange-600) */
   transform: translateY(-2px); /* Lifts the button slightly */
   box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.15);
 }

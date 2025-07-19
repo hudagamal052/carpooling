@@ -1,4 +1,4 @@
-<div class="w-full h-[500px] rounded-lg overflow-hidden">
+<div class="w-full h-[450px] rounded-lg overflow-hidden mt-13">
   <div id="map" class="relative w-full h-full"></div>
   <div class="absolute top-40 right-10 gap-4 z-999 flex flex-col">
     <button (click)="setSelectionMode(true)"
@@ -23,7 +23,7 @@
 </div>
 
 
-<div class="w-full flex justify-center mb-10 absolute top-119 z-1000">
+<div class="w-full flex justify-center mb-10 sticky top-20 z-1000">
   <div
     class="flex flex-row items-center justify-between bg-white rounded-xl shadow border border-gray-400 overflow-hidden w-full max-w-5xl divide-x divide-gray-400 h-15">
 
@@ -40,6 +40,14 @@
     </div>
 
     <div class="relative w-1/5">
+      <select [(ngModel)]="filterGender" class="w-full py-2 px-4 rounded focus:outline-none text-gray-700">
+        <option value="">الكل</option>
+        <option value="ذكر">ذكر</option>
+        <option value="أنثى">أنثى</option>
+      </select>
+    </div>
+
+    <div class="relative w-1/5">
       <input type="datetime-local" placeholder="اليوم"
         class="w-full py-2 px-4 rounded focus:outline-none text-gray-700" />
     </div>
@@ -52,15 +60,15 @@
       <span class="text-gray-700 pr-4">{{ passengerCount }} راكب</span>
     </div> -->
     <!-- Search Button -->
-    <button (click)="searchRides()" class="bg-blue-800 text-white font-bold px-8 py-3 h-full w-1/5">بحث</button>
+    <button (click)="onSearchClick()" class="bg-blue-800 text-white font-bold px-8 py-3 h-full w-1/5">بحث</button>
   </div>
 </div>
 
 
 <div class="text-center my-12 p-6 bg-gray-50 rounded-xl shadow-md">
-  <h1 class="text-3xl font-bold text-green-700 mb-3">
+  <h2 class="text-2xl font-bold text-green-700 mb-3">
     اختر من الرحلات المتاحة
-  </h1>
+  </h2>
   <p class="text-gray-600 mb-6">
     أو قم باقتراح رحلتك الخاصة وسيقوم السائقون بالتواصل معك
   </p>
@@ -79,7 +87,7 @@
       <div class="px-4 flex flex-col gap-2 items-center w-1/3 pb-2">
         <img [src]="getFullImageUrl(ride.driverImageUrl)" alt="صورة السائق"
                 class="w-16 h-16 rounded-full border-2 border-gray-300 mb-2">
-        <span class="font-bold text-gray-800">{{ ride.driverName }}</span>
+        <span class="font-bold text-gray-800 whitespace-nowrap">{{ ride.driverName }} ({{ride.driverGender}})</span>
         <div class="flex items-center justify-center gap-1">
           <span class="text-white font-semibold flex items-center justify-center gap-1 bg-yellow-500 rounded-md w-15">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="currentColor" viewBox="0 0 20 20">
@@ -137,33 +145,3 @@
   </ng-container>
   <button (click)="nextPage()" [disabled]="pageNumber === totalPages"
     class="px-4 py-2 rounded bg-gray-300 text-gray-700 disabled:opacity-50">التالي</button>
-
-  <!-- =============================================================== -->
-  <!--                SUGGEST A TRIP MODAL (POPUP )                     -->
-  <!-- =============================================================== -->
-
-  <!-- <div *ngIf="isSuggestTripModalVisible" class="modal-overlay" (click)="closeSuggestTripModal()">
-
-  
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    
-    
-    <app-suggest-trip
-        [initialFrom]="fromLocationText"
-        [initialTo]="toLocationText"
-        (closeModal)="closeSuggestTripModal()">
-    </app-suggest-trip>
-   
-
-  </div>
-</div> -->
-  <div *ngIf="isSuggestTripModalVisible" class="modal-overlay" (click)="closeSuggestTripModal()">
-
-    <div class="modal-content" (click)="$event.stopPropagation()">
-
-      <!-- ✅ CORRECTED: The [initialFrom] and [initialTo] bindings have been removed -->
-      <app-suggest-trip (closeModal)="closeSuggestTripModal()">
-      </app-suggest-trip>
-
-    </div>
-  </div>

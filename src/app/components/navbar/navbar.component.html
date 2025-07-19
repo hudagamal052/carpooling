@@ -1,5 +1,5 @@
 <nav class="fixed flex items-center justify-between h-20 shadow-md z-1000 w-full bg-white">
-  <div class="flex items-center  bg_nav h-full w-[45%] px-6">
+  <div class="flex items-center bg_nav h-full w-[45%] px-6">
     <a href="/" class="journey-logo-final px-6 pl-14">
       <svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
 
@@ -42,7 +42,7 @@
             <button (click)="goToCreateTrip()" class="hover:text-[#0BB097] border-0 font-bold cursor-pointer whitespace-nowrap">إنشاء رحلة</button> -->
     </ul>
   </div>
-  <ul class="flex gap-10 items-center font-medium px-6 m-0">
+  <ul class="flex items-center font-medium px-6 m-0">
 
     <!-- <button *ngIf="isLoggedInFn() && !isVerifiedDriverFn()" (click)="goToVerifyDriver()"
       class="flex items-center gap-3 text-yellow-900 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300 hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out whitespace-nowrap">
@@ -50,22 +50,30 @@
       <span>توثيق كسائق</span>
     </button> -->
     <button *ngIf="isLoggedInFn() && isVerifiedDriverFn()" (click)="navigateTo('/suggested-trips')"
-      class="flex items-center gap-2 rounded text-yellow-900 font-bold py-3 px-6 rounded-full shadow-lg hover:bg-[#0BB097] hover:text-white whitespace-nowrap">
-
-      <i class="bi bi-journal-text text-xl"></i>
-
+    class="flex items-center gap-2 rounded text-gray-900 font-bold py-3 px-6 hover:text-[#0BB097] whitespace-nowrap">
+    <i class="bi bi-compass text-xl"></i>
       <span>الرحلات المقترحة</span>
     </button>
     <button *ngIf="isLoggedInFn()" (click)="navigateTo('/my-suggested-trips')"
-      class="flex items-center gap-2 rounded text-yellow-900 font-bold py-3 px-6 rounded-full shadow-lg hover:bg-[#0BB097] hover:text-white whitespace-nowrap">
+      class="flex items-center gap-2 rounded text-gray-900 font-bold py-3 px-6 hover:text-[#0BB097] whitespace-nowrap">
 
-      <i class="bi bi-map text-xl"></i>
+      <i class="bi bi-person-badge text-xl"></i>
       <span>رحلاتي المقترحة</span>
     </button>
     <button *ngIf="!isLoggedInFn()" (click)="navigateTo('/')" class="hover:text-[#0BB097] border-0 font-bold cursor-pointer">كيف يعمل</button>
     <button *ngIf="isLoggedInFn() && !isVerifiedDriverFn()" (click)="goToVerifyDriver()"
-      class="hover:bg-[#0BB097] hover:border-0 hover:text-white font-bold py-3 px-8 rounded border-1">توثيق
-      كسائق</button>
+      class="flex gap-2 items-center hover:bg-[#0BB097] hover:border-0 hover:text-white text-[#0BB097] border-[#0BB097] font-bold px-3 py-1 rounded border-1 whitespace-nowrap">
+      <svg 
+    class="h-5 w-5" 
+    xmlns="http://www.w3.org/2000/svg" 
+    fill="none" 
+    viewBox="0 0 24 24" 
+    stroke-width="1.5" 
+    stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm-1.12 0a14.982 14.982 0 01-4.274 3.036" />
+  </svg>
+      <span>توثيق كسائق</span>
+    </button>
 
     <!-- <button type="button"
       (click)="toggleDarkMode()"

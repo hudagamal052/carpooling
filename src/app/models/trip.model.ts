@@ -34,4 +34,5 @@ export interface TripCard {
   driverName: string;
   driverImageUrl: string;
   rate: number;
+  driverGender: string;
 } 

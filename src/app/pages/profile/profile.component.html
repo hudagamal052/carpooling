@@ -143,9 +143,12 @@
           <ng-template #noDocs><div class="text-gray-400 text-center py-4">لا توجد مستندات توثيق.</div></ng-template>
         </div>
         <div class="card p-6 rounded-2xl bg-white/90 shadow-xl border border-blue-100" *ngIf="driverVehicle">
+          <div class="flex justify-between">
           <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
             <i class="bi bi-car-front-fill text-blue-500 bg-blue-100 p-2 rounded-full"></i> بيانات السيارة
           </h3>
+          <button class="mt-6 bg-[#364E99] text-white px-4 h-10 rounded shadow hover:bg-blue-800 transition" (click)="openEditVehicle()">تعديل بيانات السيارة</button>
+        </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div><span class="font-semibold">الموديل:</span> {{ driverVehicle.model || 'لا يوجد' }}</div>
             <div><span class="font-semibold">اللون:</span> {{ driverVehicle.color || 'لا يوجد' }}</div>
@@ -156,23 +159,25 @@
               <img *ngFor="let img of driverVehicle.imageURLs" [src]="img" class="w-20 h-20 rounded shadow border" alt="صورة السيارة">
             </div>
           </div>
-          <button class="mt-6 bg-blue-700 text-white px-6 py-2 rounded shadow hover:bg-blue-800 transition" (click)="openEditVehicle()">تعديل بيانات السيارة</button>
         </div>
 
 <!-- Modal لتعديل بيانات السيارة -->
-<div *ngIf="editVehicleMode" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-  <div class="bg-white rounded-xl p-8 w-full max-w-lg shadow-lg relative">
-    <button (click)="closeEditVehicle()" class="absolute top-2 left-2 text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+<div *ngIf="editVehicleMode" class="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-1000">
+  <div class="bg-white rounded-xl p-8 w-2xl shadow-lg relative h-[98vh]">
+    <button (click)="closeEditVehicle()" class="absolute top-2 left-2 text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
     <h3 class="text-lg font-bold mb-4 text-center">تعديل بيانات السيارة</h3>
     <form (ngSubmit)="saveVehicleDetails()">
-      <div class="mb-3">
+      <div class="flex gap-2">
+      <div class="flex-1 mb-3">
         <label class="block mb-1 font-semibold">الموديل</label>
         <input type="text" [(ngModel)]="editVehicleData.Model" name="Model" class="w-full border rounded px-3 py-2" required />
       </div>
-      <div class="mb-3">
+      <div class="flex-1 mb-3">
         <label class="block mb-1 font-semibold">اللون</label>
         <input type="text" [(ngModel)]="editVehicleData.Color" name="Color" class="w-full border rounded px-3 py-2" required />
       </div>
+      </div>
+      <div class="flex gap-2">
       <div class="mb-3">
         <label class="block mb-1 font-semibold">رقم اللوحة</label>
         <input type="text" [(ngModel)]="editVehicleData.PlateNumber" name="PlateNumber" class="w-full border rounded px-3 py-2" required />
@@ -180,6 +185,7 @@
       <div class="mb-3">
         <label class="block mb-1 font-semibold">عدد المقاعد</label>
         <input type="number" [(ngModel)]="editVehicleData.SeatsNumber" name="SeatsNumber" class="w-full border rounded px-3 py-2" min="1" required />
+      </div>
       </div>
       <div class="mb-3">
         <label class="block mb-1 font-semibold">الوصف</label>
@@ -193,8 +199,8 @@
         </div>
       </div>
       <div class="flex gap-4 mt-6">
-        <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-8 rounded-full shadow flex-1">حفظ</button>
-        <button type="button" (click)="closeEditVehicle()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-8 rounded-full shadow flex-1">إلغاء</button>
+        <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-8 rounded shadow flex-1">حفظ</button>
+        <button type="button" (click)="closeEditVehicle()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-8 rounded shadow flex-1">إلغاء</button>
       </div>
     </form>
   </div>

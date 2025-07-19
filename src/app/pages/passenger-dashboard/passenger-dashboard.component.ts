@@ -38,6 +38,7 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
   filterSeats: number | null = null;
   filterPrice: number | null = null;
   filterRate: number | null = null;
+  filterGender: string = '';
   filteredRides: TripCard[] = [];
 
   constructor(private tripService: TripService, private router: Router, private authService: AuthService) {}
@@ -330,11 +331,19 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
 
   applyFilters() {
     this.filteredRides = this.rides.filter(ride => {
+      // فلترة اسم المحافظة في "من"
+      const fromMatch = !this.fromLocationText || 
+        (ride.departureCity && ride.departureCity.toLowerCase().includes(this.fromLocationText.trim().toLowerCase()));
+
+      // فلترة اسم المحافظة في "إلى"
+      const toMatch = !this.toLocationText || 
+        (ride.destinationCity && ride.destinationCity.toLowerCase().includes(this.toLocationText.trim().toLowerCase()));
+
       const carTypeMatch = !this.filterCarType || ride.carType === this.filterCarType;
-      const seatsMatch = !this.filterSeats || ride.availableSeats >= this.filterSeats;
-      const priceMatch = !this.filterPrice || ride.price <= this.filterPrice;
-      const rateMatch = !this.filterRate || ride.rate >= this.filterRate;
-      return carTypeMatch && seatsMatch && priceMatch && rateMatch;
+      const genderMatch = !this.filterGender || ride.driverGender === this.filterGender;
+      // أضف أي فلاتر أخرى مثل السعر أو المقاعد هنا إذا أردت
+
+      return fromMatch && toMatch && carTypeMatch && genderMatch;
     });
   }
 
@@ -343,11 +352,17 @@ export class PassengerDashboardComponent implements OnInit, AfterViewInit, OnDes
     this.filterSeats = null;
     this.filterPrice = null;
     this.filterRate = null;
+    this.filterGender = '';
     this.filteredRides = [...this.rides];
   }
 
   getFullImageUrl(url: string): string {
     if (!url) return 'https://i.pravatar.cc/100';
     return url.startsWith('http') ? url : this.API_BASE_URL + url;
+  }
+
+  onSearchClick() {
+    this.searchRides();
+    setTimeout(() => this.applyFilters(), 0);
   }
 }
