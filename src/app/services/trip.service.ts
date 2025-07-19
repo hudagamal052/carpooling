@@ -11,7 +11,6 @@ import { TripCard } from '../models/trip.model';
   providedIn: 'root'
 })
 export class TripService {
-
   constructor(private http: HttpClient) { }
 
   getTripsByLocation(departureCity: string, destinationCity: string, departureDate?: string, pageNumber: number = 1, pageSize: number = 10): Observable<any> {

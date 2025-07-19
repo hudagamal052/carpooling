@@ -1,7 +1,9 @@
-import { Component, HostBinding } from '@angular/core';
+// src/app/pages/auth/auth.component.ts
+
+import { Component, HostBinding, OnInit } from '@angular/core'; // 1. أضف OnInit
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router'; // 2. أضف ActivatedRoute
 import { AuthService } from '../../services/auth.service';
 import { LoginData } from '../../models/login.model';
 import { RegisterData } from '../../models/register.model';
@@ -11,9 +13,10 @@ import { RegisterData } from '../../models/register.model';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css']
+  styleUrls: ['./auth.component.css'],
 })
-export class AuthComponent {
+export class AuthComponent implements OnInit {
+  // 3. قم بتطبيق OnInit
   isRegisterState = false;
 
   loginData: LoginData = { email: '', password: '' };
@@ -23,17 +26,31 @@ export class AuthComponent {
     Password: '',
     ConfirmPassword: '',
     PhoneNumber: '',
-    Gender: 0
+    Gender: 0,
   };
   loginError: string = '';
   registerError: string = '';
   registerSuccess: string = '';
 
+  // متغير لتخزين رابط العودة
+  private returnUrl: string = '/';
+
   @HostBinding('class.register-state') get registerStateClass() {
     return this.isRegisterState;
   }
 
-  constructor(private authService: AuthService, private router: Router) { }
+  // 4. قم بحقن ActivatedRoute
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  // 5. اقرأ رابط العودة عند تهيئة المكون
+  ngOnInit(): void {
+    // اقرأ 'returnUrl' من query params. إذا لم يكن موجودًا، استخدم '/' كقيمة افتراضية.
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  }
 
   toggleState(): void {
     const left = document.querySelector('.content-left') as HTMLElement;
@@ -54,11 +71,13 @@ export class AuthComponent {
     this.loginError = '';
     this.authService.login(this.loginData).subscribe({
       next: (res) => {
-        this.router.navigate(['/']);
+        // *** 6. استخدم رابط العودة الذي حفظناه ***
+        // أعد توجيه المستخدم إلى الصفحة التي كان يحاول الوصول إليها
+        this.router.navigateByUrl(this.returnUrl);
       },
       error: (err) => {
         this.loginError = 'فشل تسجيل الدخول. تأكد من البيانات.';
-      }
+      },
     });
   }
 
@@ -72,22 +91,21 @@ export class AuthComponent {
     }
     this.authService.register(this.registerData).subscribe({
       next: (res) => {
-        this.registerSuccess = 'تم إنشاء الحساب بنجاح!';
+        this.registerSuccess =
+          'تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.';
         this.isRegisterState = false; // أظهر نموذج تسجيل الدخول
         this.loginData.email = this.registerData.Email;
-        this.loginData.password = this.registerData.Password;
-
+        this.loginData.password = ''; // اترك كلمة المرور فارغة ليدخلها المستخدم بنفسه
       },
       error: (err) => {
         console.error('Registration error:', err);
         if (err.error && err.error.errors) {
-          // Handle validation errors from backend
           const errorMessages = Object.values(err.error.errors).flat();
           this.registerError = errorMessages.join(', ');
         } else {
           this.registerError = 'حدث خطأ أثناء إنشاء الحساب.';
         }
-      }
+      },
     });
   }
 }

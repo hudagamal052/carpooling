@@ -1,34 +1,92 @@
 <nav class="fixed flex items-center justify-between h-20 shadow-md z-1000 w-full bg-white">
   <div class="flex items-center gap-4 bg_nav h-full w-[45%] px-6">
-    <span class="font-bold text-4xl text-white px-6 pl-14">مشوار</span>
+    <a href="/" class="journey-logo-final px-6 pl-14">
+      <svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+
+        <text x="50%" y="30" text-anchor="middle"
+          style="font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 36px; fill: white;">مشوار</text>
+
+
+        <path d="M 25,60 C 50,35 170,35 195,60" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"
+          stroke-dasharray="5, 5" />
+
+
+        <g id="source-pin" style="transform-origin: center center;">
+          <circle cx="25" cy="60" r="8" fill="#0BB097" />
+          <circle cx="25" cy="60" r="3" fill="white" />
+        </g>
+
+
+        <g id="dest-pin" style="transform-origin: center center;">
+          <path
+            d="M195 52 C 199 52, 203 56, 203 60 C 203 68, 195 75, 195 75 C 195 75, 187 68, 187 60 C 187 56, 191 52, 195 52 Z"
+            fill="#E53E3E" />
+          <circle cx="195" cy="60" r="2" fill="white" />
+        </g>
+
+        <!-- السيارة المتحركة -->
+        <g id="car-final" transform="translate(0, -5)">
+          <path d="M-6,0 l3,-6 l6,0 l3,6 z" fill="#0BB097" />
+          <rect x="-6" y="0" width="12" height="5" rx="2" fill="#36e0c8" />
+        </g>
+      </svg>
+    </a>
     <ul class="flex gap-8 font-medium text-white p-0 m-0">
-      <button (click)="navigateTo('/passenger-dashboard')" class="hover:text-gray-100 border-0 font-bold cursor-pointer">البحث عن رحلة</button>
-      <button (click)="goToCreateTrip()" class="hover:text-gray-100 border-0 font-bold cursor-pointer">إنشاء رحلة</button>
+      <button (click)="navigateTo('/passenger-dashboard')"
+        class="hover:text-gray-100 border-0 font-bold cursor-pointer">البحث عن رحلة</button>
+      <button (click)="goToCreateTrip()" class="hover:text-gray-100 border-0 font-bold cursor-pointer">إنشاء
+        رحلة</button>
       <li class="flex">
       </li>
+      <!-- <button (click)="navigateTo('/passenger-dashboard')" class="hover:text-[#0BB097] flex items-center gap-2  border-0 font-bold cursor-pointer whitespace-nowrap">البحث عن رحلة</button>
+            <button (click)="goToCreateTrip()" class="hover:text-[#0BB097] border-0 font-bold cursor-pointer whitespace-nowrap">إنشاء رحلة</button> -->
     </ul>
   </div>
   <ul class="flex gap-10 items-center font-medium px-6 m-0">
+
+    <button *ngIf="isLoggedInFn() && !isVerifiedDriverFn()" (click)="goToVerifyDriver()"
+      class="flex items-center gap-3 text-yellow-900 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300 hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out whitespace-nowrap">
+
+      <!-- أيقونة مناسبة للتوثيق -->
+      <i class="bi bi-shield-check text-xl"></i>
+
+      <span>توثيق كسائق</span>
+    </button>
+    <button *ngIf="isLoggedInFn() && isVerifiedDriverFn()" (click)="navigateTo('/suggested-trips')"
+      class="flex items-center gap-3 text-yellow-900 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300 hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out whitespace-nowrap">
+
+      <i class="bi bi-journal-text text-xl"></i>
+
+      <span>الرحلات المقترحة</span>
+    </button>
+    <button *ngIf="isLoggedInFn()" (click)="navigateTo('/my-suggested-trips')"
+      class="flex items-center gap-3 text-yellow-900 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-300 hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out whitespace-nowrap">
+
+      <i class="bi bi-map text-xl"></i>
+      <span>رحلاتي المقترحة</span>
+    </button>
     <button (click)="navigateTo('/')" class="hover:text-[#0BB097] border-0 font-bold cursor-pointer">كيف يعمل</button>
-    <button *ngIf="isLoggedInFn() && !isVerifiedDriverFn()" (click)="goToVerifyDriver()" class="hover:bg-[#0BB097] hover:border-0 hover:text-white font-bold py-3 px-8 rounded border-1">توثيق كسائق</button>
+    <button *ngIf="isLoggedInFn() && !isVerifiedDriverFn()" (click)="goToVerifyDriver()"
+      class="hover:bg-[#0BB097] hover:border-0 hover:text-white font-bold py-3 px-8 rounded border-1">توثيق
+      كسائق</button>
 
     <!-- <button type="button"
       (click)="toggleDarkMode()"
       class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-yellow-300 focus:outline-none transition"
       [attr.aria-label]="isDarkMode ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع الليلي'">
     </button> -->
-    <button *ngIf="!isLoggedInFn()" type="button"
-      (click)="goToLogin()"
+    <button *ngIf="!isLoggedInFn()" type="button" (click)="goToLogin()"
       class="hover:bg-[#0BB097] hover:border-0 hover:text-white font-bold py-3 px-8 rounded border-1">
       تسجيل الدخول
     </button>
 
-    <!-- حالة المستخدم المسجل -->
+
     <ng-container *ngIf="isLoggedInFn()">
-      <!-- القائمة المنسدلة للملف الشخصي -->
+
       <div class="relative">
         <button (click)="toggleDropdown()" class="flex items-center gap-2 focus:outline-none p-1 rounded-full">
-          <img [src]="profileImageUrl" alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-primary-color transition-all">
+          <img [src]="profileImageUrl" alt="Profile"
+            class="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-primary-color transition-all">
           <span class="hidden sm:block font-semibold text-gray-800">{{ user?.name }}</span>
           <!-- شارة التوثيق -->
           <i *ngIf="isVerifiedDriverFn()" class="bi bi-patch-check-fill text-green-500 text-lg" title="حساب موثق"></i>
@@ -36,22 +94,26 @@
         </button>
 
         <!-- محتويات القائمة المنسدلة -->
-        <div *ngIf="isDropdownOpen()" class="absolute left-0 mt-2 w-60 bg-white rounded-md shadow-lg py-1 z-20 text-right border border-gray-100">
+        <div *ngIf="isDropdownOpen()"
+          class="absolute left-0 mt-2 w-60 bg-white rounded-md shadow-lg py-1 z-20 text-right border border-gray-100">
           <div class="px-4 py-3 border-b border-gray-200">
             <p class="font-bold text-gray-800 truncate">{{ user?.name }}</p>
             <p class="text-sm text-gray-500 truncate">{{ user?.email }}</p>
           </div>
-          <a (click)="navigateTo('/profile')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
+          <a (click)="navigateTo('/profile')"
+            class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
             <i class="bi bi-person-circle text-lg text-gray-700"></i>
             <span>الملف الشخصي</span>
           </a>
           <!-- زر توثيق الحساب يظهر فقط إذا لم يكن موثق كسائق -->
-          <a *ngIf="!isVerifiedDriverFn()" (click)="navigateTo('/verify-driver')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
+          <a *ngIf="!isVerifiedDriverFn()" (click)="navigateTo('/verify-driver')"
+            class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
             <i class="bi bi-shield-check text-lg text-gray-700"></i>
             <span>توثيق الحساب</span>
           </a>
           <div class="border-t border-gray-200 my-1"></div>
-          <a (click)="logout()" class="flex items-center gap-3 px-4 py-2 text-sm text-red-700 hover:bg-red-50 cursor-pointer transition-colors duration-150">
+          <a (click)="logout()"
+            class="flex items-center gap-3 px-4 py-2 text-sm text-red-700 hover:bg-red-50 cursor-pointer transition-colors duration-150">
             <i class="bi bi-box-arrow-right text-lg text-gray-700"></i>
             <span>تسجيل الخروج</span>
           </a>
@@ -59,4 +121,4 @@
       </div>
     </ng-container>
   </ul>
-</nav> 
+</nav>

@@ -8,3 +8,80 @@ button {
   font-family: inherit;
 }
 
+.suggest-trip-button {
+  background-color: #0BB097; /* A vibrant orange color (bg-orange-500) */
+  color: white;
+  font-weight: 600; /* font-semibold */
+  padding: 12px 24px; /* py-3 px-6 */
+  border-radius: 9999px; /* rounded-full */
+  border: none;
+  cursor: pointer;
+  position: relative; /* Needed for the pseudo-element icon */
+  overflow: hidden; /* Keeps the icon inside the button */
+  transition: all 0.4s ease; /* Smooth transition for all properties */
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the button on hover */
+.suggest-trip-button:hover {
+  background-color: #56befa; /* A darker orange (bg-orange-600) */
+  transform: translateY(-2px); /* Lifts the button slightly */
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Adding a "plus" icon using a pseudo-element for a clean look */
+.suggest-trip-button::before {
+  content: '+';
+  font-size: 1.5rem; /* 24px */
+  line-height: 1;
+  position: absolute;
+  left: 16px; /* Position the icon on the left */
+  top: 50%;
+  transform: translateY(-50%) scale(0); /* Initially hidden and scaled down */
+  transition: all 0.4s ease;
+}
+
+/* On hover, make the text slide right and the icon appear */
+.suggest-trip-button:hover {
+  padding-left: 48px; /* Make space for the icon to appear */
+}
+
+.suggest-trip-button:hover::before {
+  transform: translateY(-50%) scale(1); /* Scale the icon to full size */
+}
+.modal-overlay {
+  position: fixed; /* Sits on top of everything */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark overlay for better focus */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensures it's on top */
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* The white container for the form content */
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 700px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto; /* Allows scrolling if the form is long */
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Keyframe animations for a smooth appearance */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-40px) scale(0.98); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
