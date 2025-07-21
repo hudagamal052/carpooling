@@ -1,15 +1,11 @@
-.bg_nav {
-    background-image: url('/Rectangle 51.png');
-    background-size: cover;
-  }
+/*
+  هذا الملف مخصص لتعديل أنماط Bootstrap لتتناسب مع الهوية البصرية المطلوبة.
+*/
 
-
-/* تعديل عام على الحواف الدائرية */
-.rounded {
-  border-radius: 20px;
-}
-
-/* تأثيرات على الشعار عند التمرير */
+/* 
+  تعديل لون خلفية الرابط النشط (.active) في الشريط الجانبي.
+  نستخدم خلفية شفافة وخطًا جانبيًا، تمامًا مثل تصميم Tailwind.
+*/
 .journey-logo-final {
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -71,5 +67,45 @@
   50% {
     transform: scale(1.15); /* تكبير بسيط */
     opacity: 0.8;
+  }
+}
+
+.nav-pills .nav-link.active, 
+.nav-pills .show > .nav-link {
+  background-color: #2B438B; /* bg-cyan-500/10 */
+  color: #0dd9fe; /* text-cyan-400 */
+  border-right: 4px solid #c1ece9; /* border-r-4 border-cyan-400 */
+}
+
+/* 
+  تعديل لون الروابط عند مرور الماوس فوقها.
+*/
+.nav-pills .nav-link:not(.active):hover {
+  background-color: #0ca195; /* درجة أغمق قليلاً من الخلفية */
+  color: #ffffff;
+}
+
+/*
+  تأثيرات انتقالية بسيطة لتحسين تجربة المستخدم.
+*/
+.nav-link, .btn {
+  transition: all 0.2s ease-in-out;
+}
+
+/*
+  تأثير ظهور تدريجي للمحتوى عند تحميله في <router-outlet>
+*/
+:host ::ng-deep router-outlet + * {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

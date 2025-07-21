@@ -1,0 +1,84 @@
+<!-- 
+  الهيكل الرئيسي باستخدام Flexbox من Bootstrap.
+  dir="rtl" يضمن دعم التخطيط من اليمين إلى اليسار.
+-->
+<div class="d-flex vh-100 font-cairo" dir="rtl">
+
+  <!-- ======================================= -->
+  <!-- الشريط الجانبي (Sidebar)                 -->
+  <!-- ======================================= -->
+  <!-- 
+    - تم تغيير لون الخلفية إلى اللون المخصص.
+    - تم إزالة كلاس bg-dark.
+  -->
+  <aside class="d-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px; background-color: #2B438B;">
+    
+    <!-- رأس الشريط الجانبي: شعار التطبيق -->
+    <!-- 
+      - تم إزالة me-md-auto لضمان بقاء الشعار على اليمين (بداية العنصر في RTL).
+      - تم إضافة me-2 إلى الشعار لعمل مسافة بينه وبين النص.
+    -->
+    <a href="/" class="journey-logo-final px-6 pl-14">
+      <!-- SVG Logo -->
+      <svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+        <text x="50%" y="30" text-anchor="middle" style="font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 36px; fill: white;">مشوار</text>
+        <path d="M 25,60 C 50,35 170,35 195,60" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="5, 5" />
+        <g id="source-pin" style="transform-origin: center center;">
+          <circle cx="25" cy="60" r="8" fill="#0BB097" />
+          <circle cx="25" cy="60" r="3" fill="white" />
+        </g>
+        <g id="dest-pin" style="transform-origin: center center;">
+          <path d="M195 52 C 199 52, 203 56, 203 60 C 203 68, 195 75, 195 75 C 195 75, 187 68, 187 60 C 187 56, 191 52, 195 52 Z" fill="#E53E3E" />
+          <circle cx="195" cy="60" r="2" fill="white" />
+        </g>
+        <g id="car-final" transform="translate(0, -5 )">
+          <path d="M-6,0 l3,-6 l6,0 l3,6 z" fill="#0BB097" />
+          <rect x="-6" y="0" width="12" height="5" rx="2" fill="#36e0c8" />
+        </g>
+      </svg>
+    </a>
+    
+    <hr>
+
+    <!-- قائمة التنقل الرئيسية -->
+    <nav class="flex-grow-1">
+      <p class="text-white-50 text-uppercase small px-2">القوائم الرئيسية</p>
+      <ul class="nav nav-pills flex-column mt-2">
+        <li class="nav-item">
+          <!-- 
+            - تم التأكد من أن الروابط تستخدم كلاس text-white.
+          -->
+          <a routerLink="passengers" routerLinkActive="active" class="nav-link text-white d-flex align-items-center gap-3">
+            <i class="bi bi-people-fill fs-5"></i>
+            <span class="fw-medium">إدارة الركاب</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="drivers" routerLinkActive="active" class="nav-link text-white d-flex align-items-center gap-3">
+            <i class="bi bi-person-badge-fill fs-5"></i>
+            <span class="fw-medium">إدارة السائقين</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- ذيل الشريط الجانبي: تسجيل الخروج -->
+    <div class="mt-auto">
+      <hr>
+      <!-- 
+        - تم تغيير تصميم الزر ليتناسب مع الهوية البصرية الجديدة.
+      -->
+      <button (click)="logout()" class="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2">
+        <i class="bi bi-box-arrow-right fs-5"></i>
+        <span>تسجيل الخروج</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ======================================= -->
+  <!-- منطقة المحتوى الرئيسية                   -->
+  <!-- ======================================= -->
+  <main class="flex-grow-1 p-4 p-md-5 overflow-auto" style="background-color: #f8f9fa;">
+    <router-outlet></router-outlet>
+  </main>
+</div>

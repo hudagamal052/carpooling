@@ -1,71 +1,95 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { ProfileService } from '../../services/profile.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>(); // لإدارة إلغاء الاشتراكات
+
   isDarkMode = false;
   isLoggedIn = false;
   isVerifiedDriver = false;
-  public isDropdownOpenState = false;
-  public user: { name: string; email: string; profileImageUrl: string } | null = null;
-  public profileImageUrl: string = 'https://i.pravatar.cc/40';
+  isDropdownOpenState = false;
+  user: { name: string; email: string; profileImageUrl: string } | null = null;
+  profileImageUrl: string = 'https://i.pravatar.cc/40';
 
-  // اجعل authService public ليكون متاحًا في القالب
+  // اجعل authService عامًا (public ) للوصول إليه من القالب
   constructor(
     public authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
     private profileService: ProfileService
-  ) {
-    this.authService.getLoggedInObservable().subscribe(val => {
-      this.isLoggedIn = val;
-      this.cdr.markForCheck();
-      if (val && this.authService.isVerifiedDriver()) {
-        this.checkDriverVerifyStatus();
-        // جلب صورة السائق
-        this.profileService.getDriverProfile().subscribe(res => {
-          this.profileImageUrl = res.data?.driverImageUrl || 'https://i.pravatar.cc/40';
-          this.cdr.markForCheck();
-        });
-      } else if (val) {
-        // جلب صورة الراكب
-        this.profileService.getPassengerProfile().subscribe(res => {
-          this.profileImageUrl = res.data?.profileImageUrl || 'https://i.pravatar.cc/40';
-          this.cdr.markForCheck();
-        });
+  ) {}
+
+  ngOnInit(): void {
+    // التحقق من حالة تسجيل الدخول عند بدء تشغيل المكون
+    this.isLoggedIn = this.authService.isLoggedIn();
+    this.isVerifiedDriver = this.authService.isVerifiedDriver();
+    this.user = this.authService.getCurrentUser();
+
+    // الاشتراك في التغييرات
+    this.subscribeToAuthChanges();
+
+    // جلب البيانات الأولية إذا كان المستخدم مسجلاً دخوله بالفعل
+    if (this.isLoggedIn) {
+      this.fetchProfileData();
+    }
+  }
+
+  // دالة مركزية للاشتراك في تغييرات المصادقة
+  private subscribeToAuthChanges(): void {
+    // مراقبة حالة تسجيل الدخول
+    this.authService.getLoggedInObservable().pipe(takeUntil(this.destroy$)).subscribe(isLoggedIn => {
+      this.isLoggedIn = isLoggedIn;
+      if (isLoggedIn) {
+        this.fetchProfileData(); // جلب البيانات عند تسجيل الدخول
+      } else {
+        this.user = null; // مسح بيانات المستخدم عند تسجيل الخروج
       }
-    });
-    this.authService.getIsVerifiedDriverObservable().subscribe(val => {
-      this.isVerifiedDriver = val;
       this.cdr.markForCheck();
     });
-    this.authService.getCurrentUserObservable().subscribe(user => {
+
+    // مراقبة حالة توثيق السائق
+    this.authService.getIsVerifiedDriverObservable().pipe(takeUntil(this.destroy$)).subscribe(isVerified => {
+      this.isVerifiedDriver = isVerified;
+      this.cdr.markForCheck();
+    });
+
+    // مراقبة بيانات المستخدم
+    this.authService.getCurrentUserObservable().pipe(takeUntil(this.destroy$)).subscribe(user => {
       this.user = user;
       this.cdr.markForCheck();
     });
   }
 
-  ngOnInit(): void {
-    this.isLoggedIn = this.authService.isLoggedIn();
-    if (this.isLoggedIn && this.authService.isVerifiedDriver()) {
-      this.checkDriverVerifyStatus();
-    }
-    this.isVerifiedDriver = this.authService.isVerifiedDriver();
+  // دالة لجلب بيانات الملف الشخصي (صورة)
+  private fetchProfileData(): void {
+    const profileObservable = this.authService.isVerifiedDriver()
+      ? this.profileService.getDriverProfile()
+      : this.profileService.getPassengerProfile();
+
+    profileObservable.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      const imageUrl = this.authService.isVerifiedDriver()
+        ? res.data?.driverImageUrl
+        : res.data?.profileImageUrl;
+      this.profileImageUrl = imageUrl || 'https://i.pravatar.cc/40';
+      this.cdr.markForCheck( );
+    });
   }
 
+  // دالة للتحقق من حالة توثيق السائق من الخادم
   checkDriverVerifyStatus() {
-    this.authService.getDriverVerifyStatus().subscribe({
+    this.authService.getDriverVerifyStatus().pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.isVerifiedDriver = !!res.data;
         this.cdr.markForCheck();
@@ -77,36 +101,17 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  // دالة حالة تسجيل الدخول
-  isLoggedInFn(): boolean {
-    return this.isLoggedIn;
-  }
+  // --- دوال للتحكم في واجهة المستخدم ---
 
-  // دالة حالة التوثيق
-  isVerifiedDriverFn(): boolean {
-    return this.isVerifiedDriver;
-  }
-
-  // دالة المستخدم الحالي (حقيقية من AuthService)
-  currentUser() {
-    return this.authService.getCurrentUser();
-  }
-
-  // القائمة المنسدلة
-  isDropdownOpen(): boolean {
-    return this.isDropdownOpenState;
-  }
   toggleDropdown() {
     this.isDropdownOpenState = !this.isDropdownOpenState;
   }
 
-  // التنقل
   navigateTo(path: string) {
     this.router.navigate([path]);
     this.isDropdownOpenState = false;
   }
 
-  // تسجيل الخروج
   logout() {
     this.authService.logout();
     this.router.navigate(['/auth']);
@@ -115,19 +120,11 @@ export class NavbarComponent implements OnInit {
 
   toggleDarkMode() {
     this.isDarkMode = !this.isDarkMode;
-    if (this.isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle('dark', this.isDarkMode);
   }
 
   goToLogin() {
     this.router.navigate(['/auth']);
-  }
-
-  goToVerifyDriver() {
-    this.router.navigate(['/verify-driver']);
   }
 
   goToCreateTrip() {
@@ -136,5 +133,11 @@ export class NavbarComponent implements OnInit {
     } else {
       this.router.navigate(['/verify-driver']);
     }
+  }
+
+  // إلغاء الاشتراك عند تدمير المكون لمنع تسرب الذاكرة
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
