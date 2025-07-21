@@ -1,19 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminService } from '../services/admin.service'; // تأكد من أن المسار صحيح
+import { AdminService } from '../services/admin.service';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms'; // *** الخطوة 1: استيراد FormsModule ***
 
 @Component({
   selector: 'app-passengers-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule], // *** الخطوة 2: إضافة FormsModule هنا ***
   templateUrl: './passengers-list.component.html',
 })
 export class PassengersListComponent implements OnInit {
   passengers: any[] = [];
   isLoading = true;
   paginationInfo: any = null;
-  pageSize = 10;
+
+  // --- المتغيرات الجديدة ---
+  pageSize = 10; // القيمة الافتراضية لحجم الصفحة
+  availablePageSizes = [10, 25, 50, 100]; // الخيارات المتاحة لحجم الصفحة
+  goToPageNumber: number | null = null; // لتخزين رقم الصفحة الذي يدخله المستخدم
 
   constructor(private adminService: AdminService) { }
 
@@ -36,19 +41,36 @@ export class PassengersListComponent implements OnInit {
     });
   }
 
+  // --- الدوال الجديدة والمحدثة ---
+
+  /**
+   * يتم استدعاؤها عند تغيير حجم الصفحة من القائمة المنسدلة.
+   * تعيد تحميل البيانات من الصفحة الأولى بالحجم الجديد.
+   */
+  onPageSizeChange(): void {
+    this.loadPassengers(1); // ابدأ دائمًا من الصفحة 1 عند تغيير الحجم
+  }
+
+  /**
+   * يتم استدعاؤها عند النقر على زر "اذهب" للانتقال إلى صفحة معينة.
+   */
+  goToPage(): void {
+    if (this.goToPageNumber && this.paginationInfo && this.goToPageNumber > 0 && this.goToPageNumber <= this.paginationInfo.totalPages) {
+      this.loadPassengers(this.goToPageNumber);
+    }
+  }
+
   nextPage(): void {
-    // *** إضافة تحقق إضافي داخل الدالة نفسها ***
     if (!this.paginationInfo || !this.paginationInfo.hasNextPage) {
-      return; // لا تفعل شيئًا إذا لم تكن هناك صفحة تالية
+      return;
     }
     const nextPageNumber = this.paginationInfo.pageNumber + 1;
     this.loadPassengers(nextPageNumber);
   }
 
   prevPage(): void {
-    // *** إضافة تحقق إضافي داخل الدالة نفسها ***
     if (!this.paginationInfo || !this.paginationInfo.hasPreviousPage) {
-      return; // لا تفعل شيئًا إذا لم تكن هناك صفحة سابقة
+      return;
     }
     const prevPageNumber = this.paginationInfo.pageNumber - 1;
     this.loadPassengers(prevPageNumber);

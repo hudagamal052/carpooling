@@ -76,28 +76,33 @@
           <i class="bi bi-person-circle text-lg text-gray-700"></i>
           <span>الملف الشخصي</span>
         </a>
-        <a *ngIf="!authService.isVerifiedDriver()" (click)="navigateTo('/verify-driver')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
-          <i class="bi bi-shield-check text-lg text-gray-700"></i>
-          <span>توثيق الحساب</span>
-        </a>
-        
-        <!-- *** هذا هو الرابط الجديد للمسؤول *** -->
-      <a *ngIf="authService.isAdmin()" (click)="navigateTo('/admin')" 
+       <a *ngIf="!authService.isVerifiedDriver()" (click)="navigateTo('/verify-driver')" 
    class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
-  
-  <!-- النص على اليسار -->
-  <span>لوحة التحكم</span>
-
-  <!-- الأيقونة على اليمين -->
-  <i class="bi bi-gear-wide-connected text-lg text-gray-600"></i>
-
+  <span>توثيق الحساب</span>
+  <i class="bi bi-shield-check text-lg text-gray-600"></i>
 </a>
-        
-        <div class="border-t border-gray-200 my-1"></div>
-        <a (click)="logout()" class="flex items-center gap-3 px-4 py-2 text-sm text-red-700 hover:bg-red-50 cursor-pointer transition-colors duration-150">
-          <i class="bi bi-box-arrow-right text-lg text-gray-700"></i>
-          <span>تسجيل الخروج</span>
+
+ <a *ngIf="authService.isAdmin()" (click)="navigateTo('/admin')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-150">
+          <i class="bi bi-gear-wide-connected text-lg text-gray-600"></i>
+            <span>لوحة التحكم</span>
         </a>
+
+
+<!-- فاصل -->
+<div class="border-t border-gray-200 my-1"></div>
+
+<!-- رابط تسجيل الخروج -->
+<a (click)="logout()" 
+   class="group flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-md cursor-pointer transition-colors duration-150">
+  
+  <!-- 
+    - تم تغيير لون الأيقونة الافتراضي ليتناسب مع النص.
+    - تم إضافة group-hover:text-red-700 لجعلها حمراء عند مرور الماوس على الرابط.
+  -->
+  <i class="bi bi-box-arrow-right text-lg text-gray-600 group-hover:text-red-700 transition-colors duration-150"></i>
+  
+  <span>تسجيل الخروج</span>
+</a>
       </div>
     </div>
   </ul>
